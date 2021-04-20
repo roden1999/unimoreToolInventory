@@ -75,11 +75,27 @@ const registrationValidation = (data) => {
 	return schema.validate(data, { abortEarly: false });
 };
 
+//Regsistration Edit Validation
+const registrationEditValidation = (data) => {
+	const schema = Joi.object({
+		UserName: Joi.string().required().messages({
+			"string.empty": `Username is required.`,
+		}),
+		Name: Joi.string().required().messages({
+			"string.empty": `Name is required.`,
+		}),
+		Role: Joi.string().required().messages({
+			"string.empty": `Role is required.`,
+		}),
+	});
+	return schema.validate(data, { abortEarly: false });
+};
+
 //Tools Validation
 const toolsValidation = (data) => {
 	const schema = Joi.object({
 		serialNo: Joi.string().required().messages({
-			"string.empty": `SN is required.`
+			"string.empty": `Serial No. is required.`
 		}),
 		name: Joi.string().required().messages({
 			"string.empty": "Name is required."
@@ -90,7 +106,22 @@ const toolsValidation = (data) => {
 	return schema.validate(data, { abortEarly: false });
 };
 
-//Tools Validation
+//Tools Edit Validation
+const toolsEditValidation = (data) => {
+	const schema = Joi.object({
+		SerialNo: Joi.string().required().messages({
+			"string.empty": `Serial No. is required.`
+		}),
+		Name: Joi.string().required().messages({
+			"string.empty": "Name is required."
+		}),
+		Description: Joi.string().allow(''),
+		Status: Joi.string().allow(''),
+	});
+	return schema.validate(data, { abortEarly: false });
+};
+
+//Consumable Validation
 const consumableValidation = (data) => {
 	const schema = Joi.object({
 		name: Joi.string().required().messages({
@@ -100,6 +131,20 @@ const consumableValidation = (data) => {
 			"string.empty": `Quantity must have value.`
 		}),
 		description: Joi.string().allow(''),
+	});
+	return schema.validate(data, { abortEarly: false });
+};
+
+//Consumable Edit Validation
+const consumableEditValidation = (data) => {
+	const schema = Joi.object({
+		Name: Joi.string().required().messages({
+			"string.empty": "Name is required."
+		}),
+		Quantity: Joi.number().required().messages({
+			"string.empty": `Quantity must have value.`
+		}),
+		Description: Joi.string().allow(''),
 	});
 	return schema.validate(data, { abortEarly: false });
 };
@@ -127,6 +172,32 @@ const recordAddValidation = (data) => {
 	return schema.validate(data, { abortEarly: false });
 };
 
+//Consumable Form Validation
+const consumableFormValidation = (data) => {
+	const schema = Joi.object({
+		consumableId: Joi.string().required().messages({
+			"string.empty": "Item is required."
+		}),
+		employeeId: Joi.string().required().messages({
+			"string.empty": `Employee is required.`
+		}),
+		quantity: Joi.number().required().messages({
+			"string.empty": `Quantity is required.`
+		}),
+		dateIssued: Joi.string().required().messages({
+			"string.empty": `Date is required.`
+		}),
+		status: Joi.string().allow(''),
+		project: Joi.string().required().messages({
+			"string.empty": `Project is required.`
+		}),
+		issuedBy: Joi.string().required().messages({
+			"string.empty": `Issuer is required.`
+		}),
+	});
+	return schema.validate(data, { abortEarly: false });
+};
+
 //Project Validation
 const projectValidation = (data) => {
 	const schema = Joi.object({
@@ -134,6 +205,9 @@ const projectValidation = (data) => {
 			"string.empty": "Tool Id is required."
 		}),
 		description: Joi.string().allow(''),
+		date: Joi.string().required().messages({
+			"string.empty": "Date is required"
+		}),
 	});
 	return schema.validate(data, { abortEarly: false });
 };
@@ -145,6 +219,9 @@ const projectEditValidation = (data) => {
 			"string.empty": "Tool Id is required."
 		}),
 		Description: Joi.string().allow(''),
+		Date: Joi.string().required().messages({
+			"string.empty": "Date is required"
+		}),
 	});
 	return schema.validate(data, { abortEarly: false });
 };
@@ -153,8 +230,12 @@ module.exports.loginValidation = loginValidation;
 module.exports.employeeValidation = employeeValidation;
 module.exports.employeeEditValidation = employeeEditValidation;
 module.exports.registrationValidation = registrationValidation;
+module.exports.registrationEditValidation = registrationEditValidation;
 module.exports.toolsValidation = toolsValidation;
+module.exports.toolsEditValidation = toolsEditValidation;
 module.exports.consumableValidation = consumableValidation;
+module.exports.consumableEditValidation = consumableEditValidation;
 module.exports.recordAddValidation = recordAddValidation;
+module.exports.consumableFormValidation = consumableFormValidation;
 module.exports.projectValidation = projectValidation;
 module.exports.projectEditValidation = projectEditValidation;

@@ -1,7 +1,8 @@
+const { bool, boolean } = require("@hapi/joi");
 const mongoose = require("mongoose");
 
-const recordSchema = new mongoose.Schema({
-	ToolId: {
+const consumableFormSchema = new mongoose.Schema({
+	ConsumableId: {
 		type: String,
 		required: true,
     },
@@ -9,24 +10,23 @@ const recordSchema = new mongoose.Schema({
 		type: String,
         required: true
     },
-	DateBorrowed: {
+	DateIssued: {
 		type: Date,
         required: true,
     },
     ProjectId: {
         type: String,
+        required: true
     },
-    DateReturned: {
-		type: Date,
+    Quantity: {
+		type: Number,
+        required: true
     },
 	Status: {
 		type: String,
     },
-    ProcessedBy: {
-        type: String,
-    },
-    ReceivedBy: {
+    IssuedBy: {
         type: String,
     },
 });
-module.exports = mongoose.model("record", recordSchema);
+module.exports = mongoose.model("consumableForm", consumableFormSchema);

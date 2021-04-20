@@ -45,6 +45,10 @@ app.use("/tools", toolsRouter);
 const consumablesRouter = require("./routers/consumables");
 app.use("/consumables", consumablesRouter);
 
+// Route to consumable form
+const consumablesFormRouter = require("./routers/consumablesForm");
+app.use("/consumablesForm", consumablesFormRouter);
+
 // Route to records
 const recordsRouter = require("./routers/records");
 app.use("/records", recordsRouter);

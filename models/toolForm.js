@@ -1,7 +1,7 @@
 const { bool, boolean } = require("@hapi/joi");
 const mongoose = require("mongoose");
 
-const projectSchema = new mongoose.Schema({
+const toolFormSchema = new mongoose.Schema({
 	ProjectName: {
 		type: String,
 		required: true,
@@ -9,18 +9,14 @@ const projectSchema = new mongoose.Schema({
 	Description: {
 		type: String,
     },
-    Date: {
-        type: Date,
-        required: true
-    },
-    FormType: {
-        type: String,
-        required: true
-    },
+	Date: {
+		type: Date,
+		required: true
+	},
 	IsDeleted: {
 		type: Boolean,
         required: true,
         default: false
     },
 });
-module.exports = mongoose.model("project", projectSchema);
+module.exports = mongoose.model("toolForm", toolFormSchema);

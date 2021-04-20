@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const verify = require("../utils/verifyToken");
 const consumableModel = require("../models/consumable");
-const { consumableValidation } = require("../utils/validation");
+const { consumableValidation, consumableEditValidation } = require("../utils/validation");
 
 //Insert new user to the database
 router.post("/", async (request, response) => {
@@ -18,7 +18,7 @@ router.post("/", async (request, response) => {
 		Name: request.body.name,
 	});
 	if (itemExist)
-		return response.status(400).json({ message: "Item already exist." });
+		return response.status(400).send("Item already exist.");
 
 	//Create new user
 	const newItem = new consumableModel({
@@ -28,7 +28,7 @@ router.post("/", async (request, response) => {
 	});
 	try {
 		const consumable = await newItem.save();
-		response.status(200).json({ item: consumable.Name });
+		response.status(200).json({ consumable: consumable.Name });
 	} catch (error) {
 		response.status(500).json({ error: error.message });
 	}
@@ -36,6 +36,13 @@ router.post("/", async (request, response) => {
 
 router.put("/:id", async (request, response) => {
 	try {
+		//Validate before creating
+		const { error } = consumableEditValidation(request.body);
+		if (error) return response.status(400).send(error.details[0].message);
+
+		if (request.body.Quantity === 0 || request.body.Quantity === "0")
+			return response.status(400).send("Quantity must greater than 0.");
+
 		const item = await consumableModel.findById(request.params.id);
 		const updates = request.body;
 		const options = { new: true };
@@ -44,7 +51,7 @@ router.put("/:id", async (request, response) => {
 			updates,
 			options
 		);
-		response.status(200).json({ tool: updatedItem.Name });
+		response.status(200).json({ consumable: updatedItem.Name });
 	} catch (error) {
 		response.status(500).json({ error: "Error" });
 	}
@@ -53,17 +60,19 @@ router.put("/:id", async (request, response) => {
 //List of Tools
 router.post("/list", async (request, response) => {
 	try {
-		if (Object.keys(request.body).length > 0) {
+		var page = request.body.page !== "" ? request.body.page : 0;
+        var perPage = 12;
+		if (Object.keys(request.body.selectedConsumables).length > 0) {
 			var id = [];
-			var data = request.body;
+			var data = request.body.selectedConsumables;
 			for (const i in data) {
 				// console.log(`_id: ${request.body[i].value}`);
-				id.push({ _id: request.body[i].value });
+				id.push({ _id: request.body.selectedConsumables[i].value });
 			}
 			const items = await consumableModel.find({
 				'$or': id,
 				IsDeleted: false
-			}).sort('Name');
+			}).skip((page - 1) * perPage).limit(perPage).sort('Name');
 
 			var data = [];
 			for (const i in items) {
@@ -77,7 +86,7 @@ router.post("/list", async (request, response) => {
 			}
 			response.status(200).json(data);
 		} else {
-			const items = await consumableModel.find({ IsDeleted: false }).sort('FirstName');
+			const items = await consumableModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in items) {
 				var item = {
@@ -101,6 +110,18 @@ router.get("/search-options", verify, async (request, response) => {
 	try {
 		const item = await consumableModel.find({ IsDeleted: false }).sort('Name');
 		response.status(200).json(item);
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+
+// list total tools
+router.get("/total-item", async (request, response) => {
+	try {
+		// const data = await timeLogsModel.find().sort('employeeName');
+		const data = await consumableModel.find({ IsDeleted: false });
+
+		response.status(200).json(data.length);
 	} catch (error) {
 		response.status(500).json({ error: error.message });
 	}

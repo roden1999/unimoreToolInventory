@@ -33,7 +33,7 @@ router.post("/", bodyParser, async (request, response) => {
 		employeeNo: request.body.employeeNo,
 	});
 	if (employeeNoExist)
-		return response.status(400).json({ message: "Employee already exist." });
+		return response.status(400).send("Employee already exist.");
 
 	const imgdata = request.body.image;
 
@@ -62,7 +62,7 @@ router.post("/", bodyParser, async (request, response) => {
 	});
 	try {
 		const employee = await newEmployee.save();
-		response.status(200).json({ employee: employee.employeeNo + " - " + employee.firstName });
+		response.status(200).json({ employee: employee.EmployeeNo + " - " + employee.FirstName });
 	} catch (error) {
 		response.status(500).json({ error: error.message });
 	}
@@ -90,17 +90,19 @@ router.put("/:id", async (request, response) => {
 //List of Employee
 router.post("/list", verify, async (request, response) => {
 	try {
-		if (Object.keys(request.body).length > 0) {
+		var page = request.body.page !== "" ? request.body.page : 0;
+        var perPage = 12;
+		if (Object.keys(request.body.selectedEmployee).length > 0) {
 			var id = [];
-			var data = request.body;
+			var data = request.body.selectedEmployee;
 			for (const i in data) {
 				// console.log(`_id: ${request.body[i].value}`);
-				id.push({ _id: request.body[i].value });
+				id.push({ _id: request.body.selectedEmployee[i].value });
 			}
 			const employees = await employeeModel.find({
 				'$or': id,
 				IsDeleted: false
-			}).sort('FirstName');
+			}).skip((page - 1) * perPage).limit(perPage).sort('FirstName');
 
 			var data = [];
 			for (const i in employees) {
@@ -140,7 +142,7 @@ router.post("/list", verify, async (request, response) => {
 			}
 			response.status(200).json(data);
 		} else {
-			const employees = await employeeModel.find({ IsDeleted: false }).sort('FirstName');
+			const employees = await employeeModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('FirstName');
 			var data = [];
 			for (const i in employees) {
 				const records = await recordModel.find({ EmployeeId: employees[i]._id });

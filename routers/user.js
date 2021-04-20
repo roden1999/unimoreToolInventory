@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const verify = require("../utils/verifyToken");
 const userModel = require("../models/user");
-const { registrationValidation } = require("../utils/validation");
+const { registrationValidation, registrationEditValidation } = require("../utils/validation");
 
 //Insert new user to the database
 router.post("/", async (request, response) => {
@@ -15,10 +15,10 @@ router.post("/", async (request, response) => {
 		UserName: request.body.userName,
 	});
 	if (userNameExist)
-		return response.status(400).json({ message: "Username already exist" });
+		return response.status(400).send("Username already exist");
 
 	if (request.body.password !== request.body.confirmPassword)
-		return response.status(400).json({ message: "The Confirm Password confirmation does not match." });
+		return response.status(400).send("The Confirm Password confirmation does not match.");
 
 	//Hash passwords
 	const salt = await bcrypt.genSalt(10);
@@ -42,6 +42,17 @@ router.post("/", async (request, response) => {
 //Edit User
 router.put("/:id", async (request, response) => {
 	try {
+		//Validate before creating
+		const { error } = registrationEditValidation(request.body);
+		if (error) return response.status(400).send(error.details[0].message);
+
+		//Check if username exist
+		const userNameExist = await userModel.findOne({
+			UserName: request.body.userName,
+		});
+		if (userNameExist)
+			return response.status(400).send("Username already exist");
+
 		const user = await userModel.findById(request.params.id);
 		const updates = request.body;
 		const options = { new: true };
@@ -50,7 +61,7 @@ router.put("/:id", async (request, response) => {
 			updates,
 			options
 		);
-		response.status(200).json(updatedUser);
+		response.status(200).json({user: updatedUser.Name});
 	} catch (error) {
 		response.status(500).json({ error: "Error" });
 	}
@@ -59,8 +70,11 @@ router.put("/:id", async (request, response) => {
 //Change Password
 router.put("/change-password/:id", async (request, response) => {
 	try {
+		if (request.body.Password == "")
+			return response.status(400).send("Password cannot be empty.");
+
 		if (request.body.Password !== request.body.ConfirmPassword)
-			return response.status(400).json({ message: "The Confirm Password confirmation does not match." });
+			return response.status(400).send("The Confirm Password confirmation does not match.");
 
 		//Hash passwords
 		const salt = await bcrypt.genSalt(10);
@@ -74,7 +88,7 @@ router.put("/change-password/:id", async (request, response) => {
 			updates,
 			options
 		);
-		response.status(200).json(updatedUser);
+		response.status(200).json({user: updatedUser.Name});
 	} catch (error) {
 		response.status(500).json({ error: "Error" });
 	}

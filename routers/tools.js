@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const verify = require("../utils/verifyToken");
 const toolsModel = require("../models/tool");
-const { toolsValidation } = require("../utils/validation");
+const { toolsValidation, toolsEditValidation } = require("../utils/validation");
 
 //Insert new user to the database
 router.post("/", verify, async (request, response) => {
@@ -15,7 +15,7 @@ router.post("/", verify, async (request, response) => {
 		SerialNo: request.body.serialNo,
 	});
 	if (toolsExist)
-		return response.status(400).json({ message: "Employee already exist." });
+		return response.status(400).send("Serial No was already taken.");
 
 	//Create new user
 	const newTool = new toolsModel({
@@ -34,6 +34,17 @@ router.post("/", verify, async (request, response) => {
 
 router.put("/:id", verify, async (request, response) => {
 	try {
+		const { error } = toolsEditValidation(request.body);
+		if (error) return response.status(400).send(error.details[0].message);
+
+		//Check if employee number exist
+		const toolsExist = await toolsModel.findOne({
+			SerialNo: request.body.SerialNo,
+			_id: { $ne: request.params.id}
+		});
+		if (toolsExist)
+			return response.status(400).send("This Serial No. was already taken.");
+
 		const tool = await toolsModel.findById(request.params.id);
 		const updates = request.body;
 		const options = { new: true };
@@ -42,7 +53,7 @@ router.put("/:id", verify, async (request, response) => {
 			updates,
 			options
 		);
-		response.status(200).json({ tool: updatedTool.SerialNo + " - " + updatedTool.Name});
+		response.status(200).json({ tool: updatedTool.SerialNo + " - (" + updatedTool.Name + ")" });
 	} catch (error) {
 		response.status(500).json({ error: "Error" });
 	}
@@ -51,17 +62,19 @@ router.put("/:id", verify, async (request, response) => {
 //List of Tools
 router.post("/list", verify, async (request, response) => {
 	try {
-		if (Object.keys(request.body).length > 0) {
+		var page = request.body.page !== "" ? request.body.page : 0;
+        var perPage = 12;
+		if (Object.keys(request.body.selectedTools).length > 0) {
 			var id = [];
-			var data = request.body;
+			var data = request.body.selectedTools;
 			for (const i in data) {
 				// console.log(`_id: ${request.body[i].value}`);
-				id.push({ _id: request.body[i].value });
+				id.push({ _id: request.body.selectedTools[i].value });
 			}
 			const tools = await toolsModel.find({
 				'$or': id,
 				IsDeleted: false
-			}).sort('Name');
+			}).skip((page - 1) * perPage).limit(perPage).sort('Name');
 
 			var data = [];
 			for (const i in tools) {
@@ -76,7 +89,7 @@ router.post("/list", verify, async (request, response) => {
 			}
 			response.status(200).json(data);
 		} else {
-			const tools = await toolsModel.find({ IsDeleted: false }).sort('FirstName');
+			const tools = await toolsModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in tools) {
 				var tool = {
@@ -96,16 +109,16 @@ router.post("/list", verify, async (request, response) => {
 	}
 });
 
-// list total employee
-router.get("/total-tools" , verify, async (request, response) => {
-    try {
-        // const data = await timeLogsModel.find().sort('employeeName');
-        const data = await toolsModel.find({ IsDeleted: false });
+// list total tools
+router.get("/total-tools", async (request, response) => {
+	try {
+		// const data = await timeLogsModel.find().sort('employeeName');
+		const data = await toolsModel.find({ IsDeleted: false });
 
-        response.status(200).json(data.length);
-    } catch (error) {
-        response.status(500).json({ error: error.message });
-    }
+		response.status(200).json(data.length);
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
 });
 
 //For search options
@@ -124,12 +137,12 @@ router.delete("/:id", async (request, response) => {
 		const tool = await toolsModel.findById(request.params.id);
 		// const deletedTool = await tool.delete();
 		const updates = { IsDeleted: true };
-        const options = { new: true };
-        const deletedTool = await toolsModel.findByIdAndUpdate(
-            tool,
-            updates,
-            options
-        );
+		const options = { new: true };
+		const deletedTool = await toolsModel.findByIdAndUpdate(
+			tool,
+			updates,
+			options
+		);
 		response.status(200).json(deletedTool);
 	} catch (error) {
 		response.status(500).json({ error: error.message });

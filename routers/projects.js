@@ -2,6 +2,9 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const verify = require("../utils/verifyToken");
 const projectModel = require("../models/project");
+const recordModel = require("../models/record");
+const employeeModel = require("../models/employee");
+const toolModel = require("../models/tool");
 const { projectValidation, projectEditValidation } = require("../utils/validation");
 const fs = require("fs");
 const multer = require("multer");
@@ -23,6 +26,8 @@ router.post("/", async (request, response) => {
     const newProject = new projectModel({
         ProjectName: request.body.projectName,
         Description: request.body.description,
+        Date: request.body.date,
+        FormType: "Tools",
         IsDeleted: false,
     });
     try {
@@ -55,37 +60,90 @@ router.put("/:id", async (request, response) => {
 //List of Projects
 router.post("/list", verify, async (request, response) => {
     try {
-        if (Object.keys(request.body).length > 0) {
+        var page = request.body.page !== "" ? request.body.page : 0;
+        var perPage = 5;
+        if (Object.keys(request.body.selectedProject).length > 0) {
             var id = [];
-            var data = request.body;
+            var data = request.body.selectedProject;
             for (const i in data) {
-                id.push({ _id: request.body[i].value });
+                id.push({ _id: request.body.selectedProject[i].value });
             }
             const projects = await projectModel.find({
                 '$or': id,
+                FormType: "Tools",
                 IsDeleted: false
-            }).sort('ProjectName');
+            }).skip((page - 1) * perPage).limit(perPage).sort('-Date');
 
             var data = [];
             for (const i in projects) {
+                var borrowedTools = [];
+
+                const records = await recordModel.find({ ProjectId: projects[i]._id }).sort('-DateBorrowed');
+                for (const i in records) {
+                    var tool = await toolModel.find({ _id: records[i].ToolId });
+                    var employee = await employeeModel.find({ _id: records[i].EmployeeId });
+                    var recordData = {
+                        "_id": records[i]._id,
+                        "SerialNo": tool[0].SerialNo,
+                        "ToolName": tool[0].Name,
+                        "EmployeeNo": employee[0].EmployeeNo,
+                        "EmployeeName": employee[0].FirstName + " " + employee[0].MiddleName + " " + employee[0].LastName,
+                        "DateBorrowed": records[i].DateBorrowed,
+                        "Project": records[i].ProjectId,
+                        "DateReturned": records[i].DateReturned,
+                        "ProcessedBy": records[i].ProcessedBy,
+                        "Status": records[i].Status,
+                    }
+                    borrowedTools.push(recordData);
+                }
+
                 var proj = {
                     "_id": projects[i]._id,
                     "ProjectName": projects[i].ProjectName,
                     "Description": projects[i].Description,
+                    "Date": projects[i].Date,
+                    "FormType": projects[i].FormType,
                     "IsDeleted": projects[i].IsDeleted,
+
+                    "BorrowedTools": borrowedTools
                 }
                 data.push(proj);
             }
             response.status(200).json(data);
         } else {
-            const projects = await projectModel.find({ IsDeleted: false }).sort('ProjectName');
+            const projects = await projectModel.find({ IsDeleted: false, FormType: "Tools" }).skip((page - 1) * perPage).limit(perPage).sort('-Date');
             var data = [];
             for (const i in projects) {
+                var borrowedTools = [];
+
+                const records = await recordModel.find({ ProjectId: projects[i]._id }).sort('-DateBorrowed');                
+                for (const i in records) {
+                    var tool = await toolModel.find({ _id: records[i].ToolId });
+                    var employee = await employeeModel.find({ _id: records[i].EmployeeId });
+                    var recordData = {
+                        "_id": records[i]._id,
+                        "SerialNo": tool[0].SerialNo,
+                        "ToolName": tool[0].Name,
+                        "EmployeeNo": employee[0].EmployeeNo,
+                        "EmployeeName": employee[0].FirstName + " " + employee[0].MiddleName + " " + employee[0].LastName,
+                        "DateBorrowed": records[i].DateBorrowed,
+                        "Project": records[i].ProjectId,
+                        "DateReturned": records[i].DateReturned,
+                        "ProcessedBy": records[i].ProcessedBy,
+                        "Status": records[i].Status,
+                    }
+                    borrowedTools.push(recordData);
+                }
+
                 var proj = {
                     "_id": projects[i]._id,
                     "ProjectName": projects[i].ProjectName,
                     "Description": projects[i].Description,
+                    "Date": projects[i].Date,
+                    "FormType": projects[i].FormType,
                     "IsDeleted": projects[i].IsDeleted,
+
+                    "BorrowedTools": borrowedTools
                 }
                 data.push(proj);
             }
@@ -96,10 +154,22 @@ router.post("/list", verify, async (request, response) => {
     }
 });
 
+// list total form
+router.get("/total-form", async (request, response) => {
+	try {
+		// const data = await timeLogsModel.find().sort('employeeName');
+		const data = await projectModel.find({ IsDeleted: false, FormType: "Tools" });
+
+		response.status(200).json(data.length);
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+
 //For search options
 router.get("/search-options", verify, async (request, response) => {
     try {
-        const projects = await projectModel.find({ IsDeleted: false }).sort('ProjectName');
+        const projects = await projectModel.find({ IsDeleted: false, FormType: "Tools" }).sort('ProjectName');
         response.status(200).json(projects);
     } catch (error) {
         response.status(500).json({ error: error.message });

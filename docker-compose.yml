@@ -1,0 +1,28 @@
+version: '3'
+services: 
+  app: 
+    container_name: unimore-trading-tools-inventory
+    restart: always
+    build: .
+    ports: 
+      - '8080:5000'
+    # links: 
+    networks: 
+      - mern-app
+    depends_on: 
+      - mongo
+  mongo: 
+    container_name: mongo
+    restart: always
+    image: mongo
+    ports: 
+      - '27017:27017'
+    networks: 
+      - mern-app
+    volumes:
+      - mongo-data:/data/db
+networks: 
+  mern-app: 
+    driver: bridge
+volumes: 
+  mongo-data:
