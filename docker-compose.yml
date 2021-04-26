@@ -3,6 +3,7 @@ services:
   app: 
     container_name: unimore-trading-tools-inventory
     restart: always
+    image: toollinv
     build: .
     ports: 
       - '8080:5000'
