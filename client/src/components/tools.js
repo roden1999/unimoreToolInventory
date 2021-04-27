@@ -42,6 +42,7 @@ const Tools = () => {
     const [id, setId] = useState(-1);
     const [serialNo, setSerialNo] = useState("");
     const [name, setName] = useState("");
+    const [brand, setBrand] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState([]);
     const [toolsOptions, setToolsOptions] = useState("");
@@ -91,6 +92,7 @@ const Tools = () => {
             id: x._id,
             serialNo: x.SerialNo,
             name: x.Name,
+            brand: x.Brand,
             description: x.Description,
             status: x.Status,
         }))
@@ -173,6 +175,7 @@ const Tools = () => {
         var data = {
             serialNo: serialNo,
             name: name,
+            brand: brand,
             description: description,
             status: status ? status.value : "",
         }
@@ -195,6 +198,7 @@ const Tools = () => {
                 setId(-1);
                 setSerialNo("");
                 setName("");
+                setBrand("");
                 setDescription("");
                 setStatus([]);
             })
@@ -215,6 +219,7 @@ const Tools = () => {
         setId(-1);
         setSerialNo("");
         setName("");
+        setBrand("");
         setDescription("");
         setStatus([]);
     }
@@ -227,6 +232,7 @@ const Tools = () => {
         var data = {
             SerialNo: serialNo,
             Name: name,
+            Brand: brand,
             Description: description,
             Status: status ? status.value : "",
         }
@@ -249,6 +255,7 @@ const Tools = () => {
                 setId(-1);
                 setSerialNo("");
                 setName("");
+                setBrand("");
                 setDescription("");
                 setStatus([]);
             })
@@ -270,6 +277,7 @@ const Tools = () => {
         setId(params.id);
         setSerialNo(params.serialNo);
         setName(params.name);
+        setBrand(params.brand);
         setDescription(params.description);
         setStatus(sts);
     }
@@ -279,6 +287,7 @@ const Tools = () => {
         setId(-1);
         setSerialNo("");
         setName("");
+        setBrand("");
         setDescription("");
         setStatus([]);
     }
@@ -334,6 +343,7 @@ const Tools = () => {
         setId(-1);
         setSerialNo("");
         setName("");
+        setBrand("");
         setDescription("");
         setStatus([]);
     }
@@ -384,6 +394,9 @@ const Tools = () => {
                                 <Card.Header>{x.name}</Card.Header>
                                 <Card.Meta>{x.serialNo}</Card.Meta>
                                 <Card.Description>
+                                    <b>Brand:</b> {x.brand}
+                                </Card.Description>
+                                <Card.Description>
                                     <b>Description:</b> {x.description}
                                 </Card.Description>
                                 <Card.Content style={{ marginTop: 10, marginBottom: 20 }}>
@@ -408,7 +421,7 @@ const Tools = () => {
                     )}
                 </Card.Group>
 
-                {toolsList === null || toolsList.length === 0 || loader !== true &&
+                {toolsList === null || toolsList.length === 0 && loader !== true &&
                     <div style={{ textAlign: 'center', padding: 120 }}>
                         <h1 style={{ color: "#C4C4C4" }}>No data found!</h1>
                     </div>
@@ -463,6 +476,16 @@ const Tools = () => {
                             size='medium'
                             value={name}
                             onChange={e => setName(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Brand'
+                            placeholder='brand'
+                            id='form-input-brand'
+                            size='medium'
+                            value={brand}
+                            onChange={e => setBrand(e.target.value)}
                         />
 
                         <Form.Input
@@ -542,6 +565,16 @@ const Tools = () => {
                             size='medium'
                             value={name}
                             onChange={e => setName(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Brand'
+                            placeholder='brand'
+                            id='form-input-brand'
+                            size='medium'
+                            value={brand}
+                            onChange={e => setBrand(e.target.value)}
                         />
 
                         <Form.Input

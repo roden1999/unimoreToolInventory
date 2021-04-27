@@ -100,6 +100,7 @@ const toolsValidation = (data) => {
 		name: Joi.string().required().messages({
 			"string.empty": "Name is required."
 		}),
+		brand: Joi.string().allow(''),
 		description: Joi.string().allow(''),
 		status: Joi.string().allow(''),
 	});
@@ -115,6 +116,7 @@ const toolsEditValidation = (data) => {
 		Name: Joi.string().required().messages({
 			"string.empty": "Name is required."
 		}),
+		Brand: Joi.string().allow(''),
 		Description: Joi.string().allow(''),
 		Status: Joi.string().allow(''),
 	});

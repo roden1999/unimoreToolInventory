@@ -21,6 +21,7 @@ router.post("/", verify, async (request, response) => {
 	const newTool = new toolsModel({
 		SerialNo: request.body.serialNo,
 		Name: request.body.name,
+		Brand: request.body.brand,
 		Description: request.body.description,
 		Status: request.body.status,
 	});
@@ -82,6 +83,7 @@ router.post("/list", verify, async (request, response) => {
 					"_id": tools[i]._id,
 					"SerialNo": tools[i].SerialNo,
 					"Name": tools[i].Name,
+					"Brand": tools[i].Brand,
 					"Description": tools[i].Description,
 					"Status": tools[i].Status,
 				}
@@ -96,6 +98,7 @@ router.post("/list", verify, async (request, response) => {
 					"_id": tools[i]._id,
 					"SerialNo": tools[i].SerialNo,
 					"Name": tools[i].Name,
+					"Brand": tools[i].Brand,
 					"Description": tools[i].Description,
 					"Status": tools[i].Status,
 				}
@@ -125,6 +128,16 @@ router.get("/total-tools", async (request, response) => {
 router.get("/search-options", verify, async (request, response) => {
 	try {
 		const tools = await toolsModel.find({ IsDeleted: false }).sort('Name');
+		response.status(200).json(tools);
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+
+//For search options
+router.get("/search-options-st", verify, async (request, response) => {
+	try {
+		const tools = await toolsModel.find({ IsDeleted: false, Status: "Good" }).sort('Name');
 		response.status(200).json(tools);
 	} catch (error) {
 		response.status(500).json({ error: error.message });

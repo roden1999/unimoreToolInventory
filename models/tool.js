@@ -9,6 +9,9 @@ const toolSchema = new mongoose.Schema({
 		type: String,
 		required: true,
     },
+	Brand: {
+		type: String
+	},
 	Description: {
 		type: String,
     },

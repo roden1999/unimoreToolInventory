@@ -40,6 +40,7 @@ const Records = () => {
     const [loader, setLoader] = useState(false);
     const [id, setId] = useState(-1);
     const [toolData, setToolData] = useState([]);
+    const [toolDataSt, setToolDataSt] = useState([]);
     const [toolId, setToolId] = useState("");
     const [empData, setEmpData] = useState(null);
     const [employeeId, setEmployeeId] = useState([]);
@@ -288,6 +289,55 @@ const Records = () => {
         : [];
 
     function ToolsOption(item) {
+        var list = [];
+        if (item !== undefined || item !== null) {
+            item.map((x) => {
+                return list.push({
+                    label: x.name + " | " + x.serialNo,
+                    value: x.id,
+                });
+            });
+        }
+        return list;
+    }
+
+    useEffect(() => {
+        var route = "tools/search-options-st";
+        var url = window.apihost + route;
+        var token = sessionStorage.getItem("auth-token");
+
+        axios
+            .get(url, {
+                headers: { "auth-token": token },
+            })
+            .then(function (response) {
+                // handle success
+                if (Array.isArray(response.data)) {
+                    setToolDataSt(response.data);
+                } else {
+                    var obj = [];
+                    obj.push(response.data);
+                    setToolDataSt(obj);
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .finally(function () {
+                // always executed
+            });
+    }, [loader]);
+
+    const toolsOptionsListSt = toolDataSt
+        ? toolDataSt.map((x) => ({
+            id: x._id,
+            name: x.Name,
+            serialNo: x.SerialNo
+        }))
+        : [];
+
+    function ToolsOptionSt(item) {
         var list = [];
         if (item !== undefined || item !== null) {
             item.map((x) => {
@@ -785,7 +835,7 @@ const Records = () => {
                         <label><b>Tool</b></label>
                         <Select
                             defaultValue={toolId}
-                            options={ToolsOption(toolsOptionsList)}
+                            options={ToolsOptionSt(toolsOptionsListSt)}
                             onChange={e => setToolId(e)}
                             placeholder='Tool...'
                             // isClearable
