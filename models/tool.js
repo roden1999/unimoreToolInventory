@@ -12,6 +12,16 @@ const toolSchema = new mongoose.Schema({
 	Brand: {
 		type: String
 	},
+	Category: {
+		type: String,
+		required: true
+	},
+	DatePurchased: {
+		type: Date
+	},
+	Location: {
+		type: String
+	},
 	Description: {
 		type: String,
     },

@@ -14,17 +14,20 @@ router.post("/", async (request, response) => {
 		return response.status(400).send("Quantity must greater than 0.");
 
 	//Check if employee number exist
-	const itemExist = await consumableModel.findOne({
-		Name: request.body.name,
-	});
-	if (itemExist)
-		return response.status(400).send("Item already exist.");
+	// const itemExist = await consumableModel.findOne({
+	// 	Name: request.body.name,
+	// });
+	// if (itemExist)
+	// 	return response.status(400).send("Item already exist.");
 
 	//Create new user
 	const newItem = new consumableModel({
 		Name: request.body.name,
+		Brand: request.body.brand,
+		DatePurchased: request.body.datePurchased,
 		Description: request.body.description,
 		Quantity: request.body.quantity,
+		Used: request.body.used,
 	});
 	try {
 		const consumable = await newItem.save();
@@ -42,6 +45,9 @@ router.put("/:id", async (request, response) => {
 
 		if (request.body.Quantity === 0 || request.body.Quantity === "0")
 			return response.status(400).send("Quantity must greater than 0.");
+
+		if (request.body.Quantity < request.body.used)
+			return response.status(400).send("Item Used must less than Item's Quantity.");
 
 		const item = await consumableModel.findById(request.params.id);
 		const updates = request.body;
@@ -79,8 +85,11 @@ router.post("/list", async (request, response) => {
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
+					"Brand": items[i].Brand,
+					"DatePurchased": items[i].DatePurchased,
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
+					"Used": items[i].Used,
 				}
 				data.push(item);
 			}
@@ -92,8 +101,11 @@ router.post("/list", async (request, response) => {
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
+					"Brand": items[i].Brand,
+					"DatePurchased": items[i].DatePurchased,
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
+					"Used": items[i].Used,
 				}
 				data.push(item);
 			}

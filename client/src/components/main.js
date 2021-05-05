@@ -88,7 +88,7 @@ const Main = () => {
             <h4><Icon color='white' name='wpforms' /> Forms</h4>
           </Menu.Item>
 
-          {role === "Administrator" &&
+          {
             <Menu.Item
               active={page === 'EMPLOYEES'}
               onClick={() => handlePage("EMPLOYEES")}

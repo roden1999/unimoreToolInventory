@@ -4,6 +4,7 @@ import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment';
 const axios = require("axios");
 
 const customSelectStyle = {
@@ -43,6 +44,9 @@ const Tools = () => {
     const [serialNo, setSerialNo] = useState("");
     const [name, setName] = useState("");
     const [brand, setBrand] = useState("");
+    const [category, setCategory] = useState("");
+    const [datePurchased, setDatePurchased] = useState("");
+    const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState([]);
     const [toolsOptions, setToolsOptions] = useState("");
@@ -93,6 +97,9 @@ const Tools = () => {
             serialNo: x.SerialNo,
             name: x.Name,
             brand: x.Brand,
+            category: x.Category,
+            datePurchased: x.DatePurchased,
+            location: x.Location,
             description: x.Description,
             status: x.Status,
         }))
@@ -176,6 +183,9 @@ const Tools = () => {
             serialNo: serialNo,
             name: name,
             brand: brand,
+            category: category ? category.value : "",
+            datePurchased: datePurchased,
+            location: location,
             description: description,
             status: status ? status.value : "",
         }
@@ -199,6 +209,9 @@ const Tools = () => {
                 setSerialNo("");
                 setName("");
                 setBrand("");
+                setCategory("");
+                setDatePurchased("");
+                setLocation("");
                 setDescription("");
                 setStatus([]);
             })
@@ -220,6 +233,9 @@ const Tools = () => {
         setSerialNo("");
         setName("");
         setBrand("");
+        setCategory("");
+        setDatePurchased("");
+        setLocation("");
         setDescription("");
         setStatus([]);
     }
@@ -233,6 +249,9 @@ const Tools = () => {
             SerialNo: serialNo,
             Name: name,
             Brand: brand,
+            Category: category ? category.value : "",
+            DatePurchased: datePurchased,
+            Location: location,
             Description: description,
             Status: status ? status.value : "",
         }
@@ -256,6 +275,9 @@ const Tools = () => {
                 setSerialNo("");
                 setName("");
                 setBrand("");
+                setCategory("");
+                setDatePurchased("");
+                setLocation("");
                 setDescription("");
                 setStatus([]);
             })
@@ -272,12 +294,16 @@ const Tools = () => {
     }
 
     const handleOpenEditModal = (params) => {
+        var ctgry = params.category ? { value: params.category, label: params.category } : "";
         var sts = params.status ? { value: params.status, label: params.status } : "";
         setEditModal(true);
         setId(params.id);
         setSerialNo(params.serialNo);
         setName(params.name);
         setBrand(params.brand);
+        setCategory(ctgry);
+        setDatePurchased(params.datePurchased);
+        setLocation(params.location);
         setDescription(params.description);
         setStatus(sts);
     }
@@ -288,6 +314,9 @@ const Tools = () => {
         setSerialNo("");
         setName("");
         setBrand("");
+        setCategory("");
+        setDatePurchased("");
+        setLocation("");
         setDescription("");
         setStatus([]);
     }
@@ -344,6 +373,9 @@ const Tools = () => {
         setSerialNo("");
         setName("");
         setBrand("");
+        setCategory("");
+        setDatePurchased("");
+        setLocation("");
         setDescription("");
         setStatus([]);
     }
@@ -353,6 +385,14 @@ const Tools = () => {
             { value: "Good", label: "Good" },
             { value: "For Repair", label: "For Repair" },
             { value: "Damaged", label: "Damaged" },
+        ];
+        return list;
+    }
+
+    function CategoryOption() {
+        var list = [
+            { value: "Electric Tool", label: "Electric Tool" },
+            { value: "Manual Tool", label: "Manual Tool" },
         ];
         return list;
     }
@@ -387,23 +427,46 @@ const Tools = () => {
             </div>
 
             <div style={{ paddingTop: 50, }}>
-                <Card.Group itemsPerRow={3} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
+                <Card.Group itemsPerRow={4} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
                     {toolsList !== null && loader !== true && toolsList.map(x =>
                         <Card color='blue'>
                             <Card.Content>
                                 <Card.Header>{x.name}</Card.Header>
                                 <Card.Meta>{x.serialNo}</Card.Meta>
                                 <Card.Description>
-                                    <b>Brand:</b> {x.brand}
+                                    <b>Brand:</b> {x.brand ? x.brand : "No Brand"}
+                                </Card.Description>
+                                <Card.Description>
+                                    <b>Date Purchased:</b> {x.datePurchased ? moment(x.datePurchased).format("MMMM DD, yyyy") : "No Date"}
+                                </Card.Description>
+                                <Card.Description>
+                                    <b>Category:</b> {x.category}
+                                </Card.Description>
+                                <Card.Description>
+                                    <b>Location:</b> {x.location}
                                 </Card.Description>
                                 <Card.Description>
                                     <b>Description:</b> {x.description}
                                 </Card.Description>
                                 <Card.Content style={{ marginTop: 10, marginBottom: 20 }}>
-                                    <a>
-                                        <Icon name='info circle' />
-                                        <b>Status:</b> {x.status}
-                                    </a>
+                                    {x.status === "Good" &&
+                                        <a style={{ color: "green" }}>
+                                            <Icon name='info circle' />
+                                            <b>Status:</b> {x.status}
+                                        </a>
+                                    }
+                                    {x.status === "For Repair" &&
+                                        <a style={{ color: "blue" }}>
+                                            <Icon name='info circle' />
+                                            <b>Status:</b> {x.status}
+                                        </a>
+                                    }
+                                    {x.status === "Damaged" &&
+                                        <a style={{ color: "red" }}>
+                                            <Icon name='info circle' />
+                                            <b>Status:</b> {x.status}
+                                        </a>
+                                    }
                                 </Card.Content>
 
                                 <Card.Content extra>
@@ -488,6 +551,51 @@ const Tools = () => {
                             onChange={e => setBrand(e.target.value)}
                         />
 
+                        <label><strong>Category</strong></label>
+                        <Select
+                            defaultValue={category}
+                            options={CategoryOption()}
+                            onChange={e => setCategory(e)}
+                            placeholder='Category...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+
+                        <br />
+
+                        <label><b>Date Purchased</b></label>
+                        <input
+                            fluid
+                            label='Date Purchased'
+                            placeholder='date purchased'
+                            id='form-input-date-purchased'
+                            size='medium'
+                            type='date'
+                            value={moment(datePurchased).format("yyyy-MM-DD")}
+                            onChange={e => setDatePurchased(e.target.value)}
+                        />
+
+                        <br />
+
+                        <Form.Input
+                            fluid
+                            label='Location'
+                            placeholder='location'
+                            id='form-input-date-purchased'
+                            size='medium'
+                            value={location}
+                            onChange={e => setLocation(e.target.value)}
+                        />
+
                         <Form.Input
                             fluid
                             label='Description'
@@ -497,16 +605,6 @@ const Tools = () => {
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                         />
-
-                        {/* <Form.Input
-                            fluid
-                            label='Status'
-                            placeholder='status'
-                            id='form-input-last-name'
-                            size='medium'
-                            value={status}
-                            onChange={e => setStatus(e.target.value)}
-                        /> */}
 
                         <label><strong>Status</strong></label>
                         <Select
@@ -575,6 +673,51 @@ const Tools = () => {
                             size='medium'
                             value={brand}
                             onChange={e => setBrand(e.target.value)}
+                        />
+
+                        <label><strong>Category</strong></label>
+                        <Select
+                            defaultValue={category}
+                            options={CategoryOption()}
+                            onChange={e => setCategory(e)}
+                            placeholder='Category...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+
+                        <br />
+
+                        <label><b>Date Purchased</b></label>
+                        <input
+                            fluid
+                            label='Date Purchased'
+                            placeholder='date purchased'
+                            id='form-input-date-purchased'
+                            size='medium'
+                            type='date'
+                            value={moment(datePurchased).format("yyyy-MM-DD")}
+                            onChange={e => setDatePurchased(e.target.value)}
+                        />
+
+                        <br />
+
+                        <Form.Input
+                            fluid
+                            label='Location'
+                            placeholder='location'
+                            id='form-input-date-purchased'
+                            size='medium'
+                            value={location}
+                            onChange={e => setLocation(e.target.value)}
                         />
 
                         <Form.Input

@@ -55,9 +55,12 @@ const ConsumableForms = () => {
     const [dateIssued, setDateIssued] = useState(moment());
     const [issuedBy, setIssuedBy] = useState("");
     const [deleteItemModal, setDeleteItemModal] = useState(false);
-    const [itemId, setItemId] = useState(-1);
     const [addQtyModal, setAddQtyModal] = useState(false);
     const [subtractQtyModal, setSubtractQtyModal] = useState(false);
+    const [editItem, setEditItem] = useState(false);
+    const [itemId, setItemId] = useState(-1);
+    const [itemBorrower, setItemBorrower] = useState(null);
+    const [itemDateIssued, setItemDateIssued] = useState("");
     const [totalForm, setTotalForm] = useState(0);
     const [page, setPage] = useState(1);
 
@@ -256,7 +259,7 @@ const ConsumableForms = () => {
     const itemOptionsList = consumableData
         ? consumableData.map((x) => ({
             id: x._id,
-            name: x.Name,
+            name: x.Name + " | " + "Total Available: " + (x.Quantity - x.Used),
             serialNo: x.SerialNo
         }))
         : [];
@@ -459,7 +462,7 @@ const ConsumableForms = () => {
 
         var data = {
             consumableId: consumableId.length !== 0 ? consumableId.value : "",
-            quantity: quantity,
+            used: quantity,
             employeeId: employeeId.length !== 0 ? employeeId.value : "",
             dateIssued: dateIssued,
             project: project,
@@ -578,7 +581,7 @@ const ConsumableForms = () => {
         var token = sessionStorage.getItem("auth-token");
 
         var data = {
-            Quantity: quantity,
+            Used: quantity,
         }
 
         setLoader(true);
@@ -617,7 +620,7 @@ const ConsumableForms = () => {
         var token = sessionStorage.getItem("auth-token");
 
         var data = {
-            Quantity: quantity,
+            Used: quantity,
         }
 
         setLoader(true);
@@ -637,6 +640,62 @@ const ConsumableForms = () => {
                 setLoader(false);
                 setItemId(-1);
                 setQuantity(0);
+            })
+            .catch(function (error) {
+                // handle error
+                toast.error(JSON.stringify(error.response.data), {
+                    position: "top-center"
+                });
+                setLoader(false);
+            })
+            .finally(function () {
+                // always executed
+            });
+    }
+
+    const handleEditItem = (params) => {
+        var borrower = [{ value: params.EmployeeId, label: params.EmployeeName }]
+        setEditItem(true);
+        setItemId(params._id);
+        setItemBorrower(borrower);
+        setItemDateIssued(params.DateIssued);
+    }
+
+    const handleCancelEditItem = () => {
+        setEditItem(false);
+        setItemId(-1);
+        setItemBorrower(null);
+        setItemDateIssued("");
+    }
+
+    const handleSubmitEditItem = () => {
+        var route = `consumablesForm/edit-item/${itemId}`;
+        var url = window.apihost + route;
+        var token = sessionStorage.getItem("auth-token");
+
+        var data = {
+            EmployeeId: itemBorrower ? itemBorrower.value : "",
+            DateIssued: itemDateIssued
+        }
+
+        setLoader(true);
+
+        axios
+            .put(url, data, {
+                headers: {
+                    "auth-token": token,
+                },
+            })
+            .then(function (response) {
+                // handle success
+                toast.success(response.data.record + ' successfully saved.', {
+                    position: "top-center"
+                });
+                setLoader(false);
+                setEditItem(false);
+                setItemId(-1);
+                setItemBorrower(null);
+                setItemDateIssued("");
             })
             .catch(function (error) {
                 // handle error
@@ -719,7 +778,7 @@ const ConsumableForms = () => {
                                                         <div className='ui one buttons'>
                                                             {
                                                                 <Button.Group>
-                                                                    <Button basic color='grey'>
+                                                                    <Button basic color='grey' onClick={() => handleEditItem(y)}>
                                                                         <Icon name='edit' />Edit
                                                                     </Button>
                                                                     <Button basic color='grey' onClick={() => handleDeleteItemModal(y._id)}>
@@ -932,7 +991,7 @@ const ConsumableForms = () => {
                 open={editModal}
                 onClose={handleCloseEditModal}
             >
-                <Modal.Header>Edit Item</Modal.Header>
+                <Modal.Header>Edit Form</Modal.Header>
                 <Modal.Content>
                     <Form>
 
@@ -980,6 +1039,59 @@ const ConsumableForms = () => {
             </Modal>
 
             <Modal
+                size="mini"
+                open={editItem}
+                onClose={handleCancelEditItem}
+            >
+                <Modal.Header>Edit Item</Modal.Header>
+                <Modal.Content>
+                    <Form>
+
+                        <label><b>Borrower</b></label>
+                        <Select
+                            defaultValue={itemBorrower}
+                            options={EmployeesOption(employeeOptionsList)}
+                            onChange={e => setItemBorrower(e)}
+                            placeholder='Borrower...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+
+                        <br />
+
+                        <label><b>Date Issued</b></label>
+                        <input
+                            fluid
+                            label='Date Issued'
+                            placeholder='date issued'
+                            id='form-input-date-issued'
+                            size='medium'
+                            type='date'
+                            value={moment(itemDateIssued).format("yyyy-MM-DD")}
+                            onChange={e => setItemDateIssued(e.target.value)}
+                        />
+                    </Form>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={handleCancelEditItem}>
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSubmitEditItem}>
+                        <Icon name='save' />Submit
+                    </Button>
+                </Modal.Actions>
+            </Modal>
+
+            <Modal
                 open={deletePopup}
                 onClose={handleCloseDeleteModal}
                 size="small"
@@ -1005,7 +1117,10 @@ const ConsumableForms = () => {
             >
                 <Modal.Header>Warning!</Modal.Header>
 
-                <Modal.Content>Are you sure you want to Delete this item from the list?</Modal.Content>
+                <Modal.Content>
+                    Are you sure you want to Delete this item from the list? <br />
+                    Delete this only if this item was mistakenly added.
+                </Modal.Content>
 
                 <Modal.Actions>
                     <Button onClick={handleCloseDeleteItemModal}>

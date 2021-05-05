@@ -101,6 +101,11 @@ const toolsValidation = (data) => {
 			"string.empty": "Name is required."
 		}),
 		brand: Joi.string().allow(''),
+		category: Joi.string().required().messages({
+			"string.empty": "Category is required."
+		}),
+		datePurchased: Joi.string().allow(''),
+		location: Joi.string().allow(''),
 		description: Joi.string().allow(''),
 		status: Joi.string().allow(''),
 	});
@@ -117,6 +122,11 @@ const toolsEditValidation = (data) => {
 			"string.empty": "Name is required."
 		}),
 		Brand: Joi.string().allow(''),
+		Category: Joi.string().required().messages({
+			"string.empty": "Category is required."
+		}),
+		DatePurchased: Joi.string().allow(''),
+		Location: Joi.string().allow(''),
 		Description: Joi.string().allow(''),
 		Status: Joi.string().allow(''),
 	});
@@ -129,7 +139,12 @@ const consumableValidation = (data) => {
 		name: Joi.string().required().messages({
 			"string.empty": "Name is required."
 		}),
+		brand: Joi.string().allow(''),
+		datePurchased: Joi.string().allow(''),
 		quantity: Joi.number().required().messages({
+			"string.empty": `Quantity must have value.`
+		}),
+		used: Joi.number().required().messages({
 			"string.empty": `Quantity must have value.`
 		}),
 		description: Joi.string().allow(''),
@@ -143,7 +158,12 @@ const consumableEditValidation = (data) => {
 		Name: Joi.string().required().messages({
 			"string.empty": "Name is required."
 		}),
+		Brand: Joi.string().allow(''),
+		DatePurchased: Joi.string().allow(''),
 		Quantity: Joi.number().required().messages({
+			"string.empty": `Quantity must have value.`
+		}),
+		Used: Joi.number().required().messages({
 			"string.empty": `Quantity must have value.`
 		}),
 		Description: Joi.string().allow(''),
@@ -183,7 +203,7 @@ const consumableFormValidation = (data) => {
 		employeeId: Joi.string().required().messages({
 			"string.empty": `Employee is required.`
 		}),
-		quantity: Joi.number().required().messages({
+		used: Joi.number().required().messages({
 			"string.empty": `Quantity is required.`
 		}),
 		dateIssued: Joi.string().required().messages({

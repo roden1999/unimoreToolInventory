@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 const axios = require("axios");
+const moment = require("moment");
 
 const customSelectStyle = {
     control: base => ({
@@ -39,8 +40,11 @@ const Consumables = () => {
     const [loader, setLoader] = useState(false);
     const [id, setId] = useState(-1);
     const [name, setName] = useState("");
+    const [brand, setBrand] = useState("");
+    const [datePurchased, setDatePurchased] = useState("");
     const [description, setDescription] = useState("");
     const [quantity, setQuantity] = useState(0);
+    const [used, setUsed] = useState(0);
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -89,8 +93,11 @@ const Consumables = () => {
         ? consumablesData.map((x) => ({
             id: x._id,
             name: x.Name,
+            brand: x.Brand,
+            datePurchased: x.DatePurchased,
             description: x.Description,
             quantity: x.Quantity,
+            used: x.Used,
         }))
         : [];
 
@@ -169,8 +176,11 @@ const Consumables = () => {
 
         var data = {
             name: name,
+            brand: brand,
+            datePurchased: datePurchased,
             description: description,
             quantity: quantity,
+            used: used
         }
 
         setLoader(true);
@@ -190,8 +200,11 @@ const Consumables = () => {
                 setLoader(false);
                 setId(-1);
                 setName("");
+                setBrand("");
+                setDatePurchased("");
                 setDescription("");
                 setQuantity(0);
+                setUsed(0);
             })
             .catch(function (error) {
                 // handle error
@@ -209,8 +222,11 @@ const Consumables = () => {
         setAddModal(false);
         setId(-1);
         setName("");
+        setBrand("");
+        setDatePurchased("");
         setDescription("");
         setQuantity(0);
+        setUsed(0);;
     }
 
     const handleEditConsumables = () => {
@@ -220,8 +236,11 @@ const Consumables = () => {
 
         var data = {
             Name: name,
+            Brand: brand,
+            DatePurchased: datePurchased,
             Description: description,
             Quantity: quantity,
+            Used: used
         }
 
         setLoader(true);
@@ -241,8 +260,11 @@ const Consumables = () => {
                 setLoader(false);
                 setId(-1);
                 setName("");
+                setBrand("");
+                setDatePurchased("");
                 setDescription("");
                 setQuantity(0);
+                setUsed(0);
             })
             .catch(function (error) {
                 // handle error
@@ -260,16 +282,22 @@ const Consumables = () => {
         setEditModal(true);
         setId(params.id);
         setName(params.name);
+        setBrand(params.brand);
+        setDatePurchased(params.datePurchased);
         setDescription(params.description);
         setQuantity(params.quantity);
+        setUsed(params.used);
     }
 
     const handleCloseEditModal = () => {
         setEditModal(false);
         setId(-1);
         setName("");
+        setBrand("");
+        setDatePurchased("");
         setDescription("");
         setQuantity(0);
+        setUsed(0);
     }
 
     const handleDeleteItem = () => {
@@ -323,8 +351,11 @@ const Consumables = () => {
         setDeletePopup(false);
         setId(-1);
         setName("");
+        setBrand("");
+        setDatePurchased("");
         setDescription("");
         setQuantity(0);
+        setUsed(0);
     }
 
     return (
@@ -362,9 +393,18 @@ const Consumables = () => {
                         <Card color='blue'>
                             <Card.Content>
                                 <Card.Header>{x.name}</Card.Header>
-                                <Card.Meta>Description: {x.description}</Card.Meta>
+                                <Card.Meta>Brand: {x.brand ? x.brand : "No Brand"}</Card.Meta>
                                 <Card.Description>
-                                    <b>Quantity:</b> {x.quantity}
+                                    <b>Date Purchased: </b> {x.datePurchased ? moment(x.datePurchased).format("MMM DD, yyyy") : "No Date"}
+                                </Card.Description>
+                                <Card.Description>
+                                    <b>Description: </b> {x.description ? x.description : "No Description"}
+                                </Card.Description>
+                                <Card.Description>
+                                    <b>Used: </b> {x.used + " / " + x.quantity}
+                                </Card.Description>
+                                <Card.Description>
+                                    <b>Total Available: </b> {(x.quantity - x.used)}
                                 </Card.Description>
 
                                 <Card.Content extra style={{ marginTop: 10 }}>
@@ -431,6 +471,31 @@ const Consumables = () => {
 
                         <Form.Input
                             fluid
+                            label='Brand'
+                            placeholder='brand'
+                            id='form-input-brand'
+                            size='medium'
+                            value={brand}
+                            onChange={e => setBrand(e.target.value)}
+                        />
+
+                        <label><b>Date Purchased</b></label>
+                        <input
+                            fluid
+                            label='Date Purchased'
+                            placeholder='date purchased'
+                            id='form-input-date-purchased'
+                            size='medium'
+                            type='date'
+                            value={moment(datePurchased).format("yyyy-MM-DD")}
+                            onChange={e => setDatePurchased(e.target.value)}
+                        />
+
+                        <br />
+                        <br />
+
+                        <Form.Input
+                            fluid
                             label='Description'
                             placeholder='description'
                             id='form-input-description'
@@ -483,6 +548,31 @@ const Consumables = () => {
 
                         <Form.Input
                             fluid
+                            label='Brand'
+                            placeholder='brand'
+                            id='form-input-brand'
+                            size='medium'
+                            value={brand}
+                            onChange={e => setBrand(e.target.value)}
+                        />
+
+                        <label><b>Date Purchased</b></label>
+                        <input
+                            fluid
+                            label='Date Purchased'
+                            placeholder='date purchased'
+                            id='form-input-date-purchased'
+                            size='medium'
+                            type='date'
+                            value={moment(datePurchased).format("yyyy-MM-DD")}
+                            onChange={e => setDatePurchased(e.target.value)}
+                        />
+
+                        <br />
+                        <br />
+
+                        <Form.Input
+                            fluid
                             label='Description'
                             placeholder='description'
                             id='form-input-description'
@@ -501,6 +591,18 @@ const Consumables = () => {
                             min="0"
                             value={quantity}
                             onChange={e => setQuantity(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Used'
+                            placeholder='used'
+                            id='form-input-used'
+                            type="number"
+                            size='medium'
+                            min="0"
+                            value={used}
+                            onChange={e => setUsed(e.target.value)}
                         />
                     </Form>
                 </Modal.Content>

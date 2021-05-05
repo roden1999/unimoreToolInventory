@@ -106,7 +106,7 @@ router.post("/list", verify, async (request, response) => {
 
 			var data = [];
 			for (const i in employees) {
-				const records = await recordModel.find({ EmployeeId: employees[i]._id });
+				const records = await recordModel.find({ EmployeeId: employees[i]._id, Status: "Borrowed" });
 				var BorrowedTools = [];
 				var TotalBorrowed = 0;
 
@@ -145,7 +145,7 @@ router.post("/list", verify, async (request, response) => {
 			const employees = await employeeModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('FirstName');
 			var data = [];
 			for (const i in employees) {
-				const records = await recordModel.find({ EmployeeId: employees[i]._id });
+				const records = await recordModel.find({ EmployeeId: employees[i]._id, Status: "Borrowed" });
 				var BorrowedTools = [];
 				var TotalBorrowed = 0;
 

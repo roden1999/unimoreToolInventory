@@ -22,6 +22,9 @@ router.post("/", verify, async (request, response) => {
 		SerialNo: request.body.serialNo,
 		Name: request.body.name,
 		Brand: request.body.brand,
+		Category: request.body.category,
+		DatePurchased: request.body.datePurchased,
+		Location: request.body.location,
 		Description: request.body.description,
 		Status: request.body.status,
 	});
@@ -84,6 +87,9 @@ router.post("/list", verify, async (request, response) => {
 					"SerialNo": tools[i].SerialNo,
 					"Name": tools[i].Name,
 					"Brand": tools[i].Brand,
+					"Category": tools[i].Category,
+					"DatePurchased": tools[i].DatePurchased,
+					"Location": tools[i].Location,
 					"Description": tools[i].Description,
 					"Status": tools[i].Status,
 				}
@@ -99,6 +105,9 @@ router.post("/list", verify, async (request, response) => {
 					"SerialNo": tools[i].SerialNo,
 					"Name": tools[i].Name,
 					"Brand": tools[i].Brand,
+					"Category": tools[i].Category,
+					"DatePurchased": tools[i].DatePurchased,
+					"Location": tools[i].Location,
 					"Description": tools[i].Description,
 					"Status": tools[i].Status,
 				}

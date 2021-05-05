@@ -85,7 +85,9 @@ router.post("/list", verify, async (request, response) => {
                     var recordData = {
                         "_id": records[i]._id,
                         "SerialNo": tool[0].SerialNo,
+                        "ToolId": tool[0]._id,
                         "ToolName": tool[0].Name,
+                        "EmployeeId": employee[0]._id,
                         "EmployeeNo": employee[0].EmployeeNo,
                         "EmployeeName": employee[0].FirstName + " " + employee[0].MiddleName + " " + employee[0].LastName,
                         "DateBorrowed": records[i].DateBorrowed,
@@ -123,7 +125,9 @@ router.post("/list", verify, async (request, response) => {
                     var recordData = {
                         "_id": records[i]._id,
                         "SerialNo": tool[0].SerialNo,
+                        "ToolId": tool[0].ToolId,
                         "ToolName": tool[0].Name,
+                        "EmployeeId": employee[0]._id,
                         "EmployeeNo": employee[0].EmployeeNo,
                         "EmployeeName": employee[0].FirstName + " " + employee[0].MiddleName + " " + employee[0].LastName,
                         "DateBorrowed": records[i].DateBorrowed,
@@ -183,12 +187,12 @@ router.delete("/:id", async (request, response) => {
         // const deletedEmployee = await project.delete();
         const updates = { IsDeleted: true };
         const options = { new: true };
-        const deletedEmployee = await projectModel.findByIdAndUpdate(
+        const deletedProject = await projectModel.findByIdAndUpdate(
             project,
             updates,
             options
         );
-        response.status(200).json(deletedEmployee);
+        response.status(200).json(deletedProject);
     } catch (error) {
         response.status(500).json({ error: error.message });
     }

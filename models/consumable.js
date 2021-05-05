@@ -5,10 +5,20 @@ const consumableSchema = new mongoose.Schema({
 		type: String,
 		required: true,
     },
+	Brand: {
+		type: String,
+    },
+	DatePurchased: {
+		type: Date,
+	},
 	Description: {
 		type: String,
     },
 	Quantity: {
+		type: Number,
+        required: true,
+    },
+	Used: {
 		type: Number,
         required: true,
     },

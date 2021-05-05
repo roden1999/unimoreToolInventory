@@ -14,6 +14,11 @@ router.post("/", verify, async (request, response) => {
 	if (error) return response.status(400).send(error.details[0].message);
 
 	//Check if employee number exist
+	const toolsStats = await toolModel.findById(request.body.toolId);
+	if (toolsStats.Status !== "Good")
+		return response.status(400).send("Tool must be in Good Status for able to borrow.");
+
+	//Check if employee number exist
 	const toolsExist = await recordModel.findOne({
 		ToolId: request.body.toolId,
 		Status: "Borrowed"
@@ -56,11 +61,46 @@ router.put("/:id", async (request, response) => {
 	}
 });
 
+//Edit Item
+router.put("/edit-item/:id", async (request, response) => {
+	try {
+		if (request.body.EmployeeId === "")
+			return response.status(400).send("Borrower must have value.");
+
+		if (request.body.ToolId === "")
+			return response.status(400).send("Tool must have value.");
+
+		if (request.body.DateBorrowed === "")
+			return response.status(400).send("Tool must have value.");
+
+		//Check if employee number exist
+		const toolsExist = await recordModel.findOne({
+			ToolId: request.body.ToolId,
+			Status: "Borrowed"
+		});
+		if (toolsExist && toolsExist._id !== request.body.ToolId)
+			return response.status(400).send("Tool already Borrowed by someone.");
+
+		const record = await recordModel.findById(request.params.id);
+
+		const updates = request.body;
+		const options = { new: true };
+		const updatedRecord = await recordModel.findByIdAndUpdate(
+			record,
+			updates,
+			options
+		);
+		response.status(200).json({ record: "Successfuly edit item." });
+	} catch (error) {
+		response.status(500).json({ error: "Error" });
+	}
+});
+
 //List of Borrowed Tools
 router.post("/list-borrowed", async (request, response) => {
 	try {
 		var page = request.body.page !== "" ? request.body.page : 0;
-        var perPage = 12;
+		var perPage = 12;
 		if (Object.keys(request.body.searchTool).length > 0) {
 			var id = [];
 			var data = request.body.searchTool;
@@ -99,9 +139,9 @@ router.post("/list-borrowed", async (request, response) => {
 				var tool = await toolModel.find({ _id: records[i].ToolId });
 				var employee = await employeeModel.find({ _id: records[i].EmployeeId });
 				var project = "";
-				if (records[i].ProjectId !== "") 
+				if (records[i].ProjectId !== "")
 					project = await projectModel.find({ _id: records[i].ProjectId });
-				
+
 				var recordData = {
 					"_id": records[i]._id,
 					"SerialNo": tool[0].SerialNo,
@@ -127,7 +167,7 @@ router.post("/list-borrowed", async (request, response) => {
 router.post("/list-returned", async (request, response) => {
 	try {
 		var page = request.body.page !== "" ? request.body.page : 0;
-        var perPage = 12;
+		var perPage = 12;
 		if (Object.keys(request.body.searchTool).length > 0) {
 			var id = [];
 			var data = request.body.searchTool;
