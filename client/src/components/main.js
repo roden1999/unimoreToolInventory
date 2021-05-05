@@ -127,7 +127,7 @@ const Main = () => {
           {page === "RECORDS" &&
             <Records />
           }
-          {page === "EMPLOYEES" && role === "Administrator" &&
+          {page === "EMPLOYEES" &&
             <Employees />
           }
           {page === "FORMS" &&
