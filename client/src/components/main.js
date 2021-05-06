@@ -127,7 +127,7 @@ const Main = () => {
 
       <Grid.Column stretched width={13}>
         <Segment style={{ marginTop: 20, height: '100%', minHeight: '95vh', maxHeight: '95vh' }}>
-          {page === "SPARE PARTS" &&
+          {page === "SPARE PARTS" && role !== "Tool Keeper" &&
             <MachineSpareParts />
           }
           {page === "TOOLS" &&

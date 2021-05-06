@@ -140,7 +140,7 @@ const Users = () => {
         var item = [
             { role: "Administrator", key: "Administrator" },
             { role: "Tool Keeper", key: "Tool Keeper" },
-            { role: "User", key: "User" }
+            { role: "Maintenance", key: "Maintenance" }
         ]
         if (item !== undefined || item !== null) {
             item.map((x) => {
