@@ -140,6 +140,7 @@ const consumableValidation = (data) => {
 			"string.empty": "Name is required."
 		}),
 		brand: Joi.string().allow(''),
+		unit: Joi.string().allow(''),
 		datePurchased: Joi.string().allow(''),
 		quantity: Joi.number().required().messages({
 			"string.empty": `Quantity must have value.`
@@ -159,6 +160,7 @@ const consumableEditValidation = (data) => {
 			"string.empty": "Name is required."
 		}),
 		Brand: Joi.string().allow(''),
+		Unit: Joi.string().allow(''),
 		DatePurchased: Joi.string().allow(''),
 		Quantity: Joi.number().required().messages({
 			"string.empty": `Quantity must have value.`
@@ -248,6 +250,42 @@ const projectEditValidation = (data) => {
 	return schema.validate(data, { abortEarly: false });
 };
 
+//Spare Parts Validation
+const sparePartsValidation = (data) => {
+	const schema = Joi.object({
+		name: Joi.string().required().messages({
+			"string.empty": "Name is required."
+		}),
+		machine: Joi.string().required().messages({
+			"string.empty": "Machine is required."
+		}),
+		description: Joi.string().allow(''),
+		remarks: Joi.string().allow(''),
+		status: Joi.string().required().messages({
+			"string.empty": "Status is required"
+		}),
+	});
+	return schema.validate(data, { abortEarly: false });
+};
+
+//Spare Parts Edit Validation
+const sparePartsEditValidation = (data) => {
+	const schema = Joi.object({
+		Name: Joi.string().required().messages({
+			"string.empty": "Name is required."
+		}),
+		// Machine: Joi.string().required().messages({
+		// 	"string.empty": "Machine is required."
+		// }),
+		Description: Joi.string().allow(''),
+		Remarks: Joi.string().allow(''),
+		Status: Joi.string().required().messages({
+			"string.empty": "Status is required"
+		}),
+	});
+	return schema.validate(data, { abortEarly: false });
+};
+
 module.exports.loginValidation = loginValidation;
 module.exports.employeeValidation = employeeValidation;
 module.exports.employeeEditValidation = employeeEditValidation;
@@ -261,3 +299,5 @@ module.exports.recordAddValidation = recordAddValidation;
 module.exports.consumableFormValidation = consumableFormValidation;
 module.exports.projectValidation = projectValidation;
 module.exports.projectEditValidation = projectEditValidation;
+module.exports.sparePartsValidation = sparePartsValidation;
+module.exports.sparePartsEditValidation = sparePartsEditValidation;

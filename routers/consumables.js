@@ -10,8 +10,8 @@ router.post("/", async (request, response) => {
 	const { error } = consumableValidation(request.body);
 	if (error) return response.status(400).send(error.details[0].message);
 
-	if (request.body.quantity === 0 || request.body.quantity === "0")
-		return response.status(400).send("Quantity must greater than 0.");
+	// if (request.body.quantity === 0 || request.body.quantity === "0")
+	// 	return response.status(400).send("Quantity must greater than 0.");
 
 	//Check if employee number exist
 	// const itemExist = await consumableModel.findOne({
@@ -24,6 +24,7 @@ router.post("/", async (request, response) => {
 	const newItem = new consumableModel({
 		Name: request.body.name,
 		Brand: request.body.brand,
+		Unit: request.body.unit,
 		DatePurchased: request.body.datePurchased,
 		Description: request.body.description,
 		Quantity: request.body.quantity,
@@ -43,8 +44,8 @@ router.put("/:id", async (request, response) => {
 		const { error } = consumableEditValidation(request.body);
 		if (error) return response.status(400).send(error.details[0].message);
 
-		if (request.body.Quantity === 0 || request.body.Quantity === "0")
-			return response.status(400).send("Quantity must greater than 0.");
+		// if (request.body.Quantity === 0 || request.body.Quantity === "0")
+		// 	return response.status(400).send("Quantity must greater than 0.");
 
 		if (request.body.Quantity < request.body.used)
 			return response.status(400).send("Item Used must less than Item's Quantity.");
@@ -86,6 +87,7 @@ router.post("/list", async (request, response) => {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
 					"Brand": items[i].Brand,
+					"Unit": items[i].Unit,
 					"DatePurchased": items[i].DatePurchased,
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
@@ -102,6 +104,7 @@ router.post("/list", async (request, response) => {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
 					"Brand": items[i].Brand,
+					"Unit": items[i].Unit,
 					"DatePurchased": items[i].DatePurchased,
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,

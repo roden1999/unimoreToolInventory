@@ -38,6 +38,10 @@ const projectsRouter = require("./routers/projects");
 app.use("/projects", projectsRouter);
 
 // Route to tools
+const spRouter = require("./routers/spareParts");
+app.use("/spareParts", spRouter);
+
+// Route to tools
 const toolsRouter = require("./routers/tools");
 app.use("/tools", toolsRouter);
 

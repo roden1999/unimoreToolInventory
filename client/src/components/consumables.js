@@ -41,6 +41,7 @@ const Consumables = () => {
     const [id, setId] = useState(-1);
     const [name, setName] = useState("");
     const [brand, setBrand] = useState("");
+    const [unit, setUnit] = useState([]);
     const [datePurchased, setDatePurchased] = useState("");
     const [description, setDescription] = useState("");
     const [quantity, setQuantity] = useState(0);
@@ -94,6 +95,7 @@ const Consumables = () => {
             id: x._id,
             name: x.Name,
             brand: x.Brand,
+            unit: x.Unit,
             datePurchased: x.DatePurchased,
             description: x.Description,
             quantity: x.Quantity,
@@ -177,6 +179,7 @@ const Consumables = () => {
         var data = {
             name: name,
             brand: brand,
+            unit: unit.length !== 0 ? unit.value : "",
             datePurchased: datePurchased,
             description: description,
             quantity: quantity,
@@ -201,6 +204,7 @@ const Consumables = () => {
                 setId(-1);
                 setName("");
                 setBrand("");
+                setUnit(null);
                 setDatePurchased("");
                 setDescription("");
                 setQuantity(0);
@@ -223,6 +227,7 @@ const Consumables = () => {
         setId(-1);
         setName("");
         setBrand("");
+        setUnit(null);
         setDatePurchased("");
         setDescription("");
         setQuantity(0);
@@ -237,6 +242,7 @@ const Consumables = () => {
         var data = {
             Name: name,
             Brand: brand,
+            Unit: unit.length !== 0 ? unit.value : "",
             DatePurchased: datePurchased,
             Description: description,
             Quantity: quantity,
@@ -261,6 +267,7 @@ const Consumables = () => {
                 setId(-1);
                 setName("");
                 setBrand("");
+                setUnit(null);
                 setDatePurchased("");
                 setDescription("");
                 setQuantity(0);
@@ -279,10 +286,12 @@ const Consumables = () => {
     }
 
     const handleOpenEditModal = (params) => {
+        var u = params.unit !== "" ? { label: params.unit, value: params.unit } : []
         setEditModal(true);
         setId(params.id);
         setName(params.name);
         setBrand(params.brand);
+        setUnit(u);
         setDatePurchased(params.datePurchased);
         setDescription(params.description);
         setQuantity(params.quantity);
@@ -294,6 +303,7 @@ const Consumables = () => {
         setId(-1);
         setName("");
         setBrand("");
+        setUnit(null);
         setDatePurchased("");
         setDescription("");
         setQuantity(0);
@@ -352,10 +362,24 @@ const Consumables = () => {
         setId(-1);
         setName("");
         setBrand("");
+        setUnit(null);
         setDatePurchased("");
         setDescription("");
         setQuantity(0);
         setUsed(0);
+    }
+
+    function UnitOption() {
+        var list = [
+            { value: "Pieces", label: "Pieces" },
+            { value: "Box", label: "Box" },
+            { value: "Sets", label: "Sets" },
+            { value: "Unit", label: "Unit" },
+            { value: "Meters", label: "Meters" },
+            { value: "Litters", label: "Litters" },
+            { value: "Package", label: "Package" },
+        ];
+        return list;
     }
 
     return (
@@ -394,6 +418,9 @@ const Consumables = () => {
                             <Card.Content>
                                 <Card.Header>{x.name}</Card.Header>
                                 <Card.Meta>Brand: {x.brand ? x.brand : "No Brand"}</Card.Meta>
+                                <Card.Description>
+                                    <b>Unit: </b> {x.unit}
+                                </Card.Description>
                                 <Card.Description>
                                     <b>Date Purchased: </b> {x.datePurchased ? moment(x.datePurchased).format("MMM DD, yyyy") : "No Date"}
                                 </Card.Description>
@@ -479,6 +506,27 @@ const Consumables = () => {
                             onChange={e => setBrand(e.target.value)}
                         />
 
+                        <label><strong>Unit</strong></label>
+                        <Select
+                            defaultValue={unit}
+                            options={UnitOption()}
+                            onChange={e => setUnit(e)}
+                            placeholder='Status...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+
+                        <br />
+
                         <label><b>Date Purchased</b></label>
                         <input
                             fluid
@@ -555,6 +603,27 @@ const Consumables = () => {
                             value={brand}
                             onChange={e => setBrand(e.target.value)}
                         />
+
+                        <label><strong>Unit</strong></label>
+                        <Select
+                            defaultValue={unit}
+                            options={UnitOption()}
+                            onChange={e => setUnit(e)}
+                            placeholder='Status...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+
+                        <br />
 
                         <label><b>Date Purchased</b></label>
                         <input

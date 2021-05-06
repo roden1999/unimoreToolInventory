@@ -3,6 +3,7 @@ import { Menu, Grid, Segment, Icon, Image, Button } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 
 //Components
+import MachineSpareParts from './machineSpareParts';
 import Tools from './tools';
 import Consumables from './consumables';
 import Records from './records';
@@ -60,11 +61,19 @@ const Main = () => {
           </Menu.Item>
 
           <Menu.Item
+            active={page === 'SPARE PARTS'}
+            onClick={() => handlePage("SPARE PARTS")}
+            color="blue"
+          >
+            <h4><Icon color='white' name='microchip' /> Machine Spare Parts</h4>
+          </Menu.Item>
+
+          <Menu.Item
             active={page === 'TOOLS'}
             onClick={() => handlePage("TOOLS")}
             color="blue"
           >
-            <h4><Icon color='white' name='microchip' /> Tools</h4>
+            <h4><Icon color='white' name='gavel' /> Tools</h4>
           </Menu.Item>
 
           <Menu.Item
@@ -118,6 +127,9 @@ const Main = () => {
 
       <Grid.Column stretched width={13}>
         <Segment style={{ marginTop: 20, height: '100%', minHeight: '95vh', maxHeight: '95vh' }}>
+          {page === "SPARE PARTS" &&
+            <MachineSpareParts />
+          }
           {page === "TOOLS" &&
             <Tools />
           }

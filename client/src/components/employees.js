@@ -504,13 +504,13 @@ const Employees = () => {
                 <Modal.Header>Add New Employee</Modal.Header>
                 <Modal.Content>
                     <Form>
-                        {image !== null &&
+                        {/* image !== null &&
                             <Image src={image.files} size='medium' circular />
-                        }
+                         */}
 
-                        <br />
+                        {/* <br /> */}
 
-                        <Form.Input
+                        {/* <Form.Input
                             fluid
                             label='Image'
                             placeholder='image'
@@ -520,7 +520,7 @@ const Employees = () => {
                             type='file'
                             accept='.jpeg, .png, .jpg'
                             onChange={e => handleFile(e)}
-                        />
+                        /> */}
 
                         <Form.Input
                             fluid

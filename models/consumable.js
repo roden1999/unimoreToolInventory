@@ -8,6 +8,9 @@ const consumableSchema = new mongoose.Schema({
 	Brand: {
 		type: String,
     },
+	Unit: {
+		type: String
+	},
 	DatePurchased: {
 		type: Date,
 	},

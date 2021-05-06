@@ -62,10 +62,11 @@ router.post("/add-item", verify, async (request, response) => {
         return response.status(400).send("Item already exist in this form.");
     const item = await consumableModel.findById(request.body.consumableId);
     const options = { new: true };
-    if (item.Quantity < request.body.quantity)
+
+    if (item.Quantity < request.body.used)
         return response.status(400).send("Inputed Quantity must lower or equal to Item's Quantity.");
 
-    if (request.body.quantity === 0 || request.body.quantity === "0")
+    if (request.body.used === 0 || request.body.used === "0")
         return response.status(400).send("Quantity must be greater than 0");
 
     //Create new record
