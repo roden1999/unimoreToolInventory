@@ -424,13 +424,13 @@ const Users = () => {
                             </Card.Content>
                             <Card.Content extra>
                                 <div className='ui three buttons'>
-                                    <Button basic color='grey' onClick={() => handleOpenEditModal(x)}>
+                                    <Button basic color='grey' disabled={x.userName === "superadmin" ? true : false} onClick={() => handleOpenEditModal(x)}>
                                         Edit
                                     </Button>
-                                    <Button basic color='grey' onClick={() => handleOpenChangePassModal(x.id)}>
+                                    <Button basic color='grey' disabled={x.userName === "superadmin" ? true : false} onClick={() => handleOpenChangePassModal(x.id)}>
                                         Change Password
                                     </Button>
-                                    <Button basic color='grey' onClick={() => onDelete(x.id)}>
+                                    <Button basic color='grey' disabled={x.userName === "superadmin" ? true : false} onClick={() => onDelete(x.id)}>
                                         Delete
                                     </Button>
                                 </div>

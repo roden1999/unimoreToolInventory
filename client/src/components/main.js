@@ -53,20 +53,22 @@ const Main = () => {
         <Menu inverted fluid vertical size='massive' style={{ height: '100%', minHeight: '100vh', maxHeight: '100vh' }}>
 
           <Menu.Item>
-            <div style={{ alignItem: 'center', textAlign: 'center'}}>
-            <Image src="unimore-logo.png"  />
-            <p>{name}</p>
-            <Button size='small' onClick={logOut}><Icon color='white' name='log out' />Logout</Button>
+            <div style={{ alignItem: 'center', textAlign: 'center' }}>
+              <Image src="unimore-logo.png" />
+              <p>{name}</p>
+              <Button size='small' onClick={logOut}><Icon color='white' name='log out' />Logout</Button>
             </div>
           </Menu.Item>
 
-          <Menu.Item
-            active={page === 'SPARE PARTS'}
-            onClick={() => handlePage("SPARE PARTS")}
-            color="blue"
-          >
-            <h4><Icon color='white' name='microchip' /> Machine Spare Parts</h4>
-          </Menu.Item>
+          {role !== "Tool Keeper" &&
+            <Menu.Item
+              active={page === 'SPARE PARTS'}
+              onClick={() => handlePage("SPARE PARTS")}
+              color="blue"
+            >
+              <h4><Icon color='white' name='microchip' /> Machine Spare Parts</h4>
+            </Menu.Item>
+          }
 
           <Menu.Item
             active={page === 'TOOLS'}
@@ -111,7 +113,7 @@ const Main = () => {
               active={page === 'MANAGE_USER'}
               onClick={() => handlePage("MANAGE_USER")}
             >
-              <h4><Icon color='white' name='user circle' /> Users</h4>  
+              <h4><Icon color='white' name='user circle' /> Users</h4>
             </Menu.Item>
           }
 
@@ -150,7 +152,7 @@ const Main = () => {
           }
         </Segment>
       </Grid.Column>
-    </Grid>
+    </Grid >
   );
 }
 

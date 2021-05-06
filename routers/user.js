@@ -61,7 +61,7 @@ router.put("/:id", async (request, response) => {
 			updates,
 			options
 		);
-		response.status(200).json({user: updatedUser.Name});
+		response.status(200).json({ user: updatedUser.Name });
 	} catch (error) {
 		response.status(500).json({ error: "Error" });
 	}
@@ -88,7 +88,7 @@ router.put("/change-password/:id", async (request, response) => {
 			updates,
 			options
 		);
-		response.status(200).json({user: updatedUser.Name});
+		response.status(200).json({ user: updatedUser.Name });
 	} catch (error) {
 		response.status(500).json({ error: "Error" });
 	}
