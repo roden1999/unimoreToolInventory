@@ -256,6 +256,9 @@ const sparePartsValidation = (data) => {
 		name: Joi.string().required().messages({
 			"string.empty": "Name is required."
 		}),
+		quantity: Joi.string().required().messages({
+			"string.empty": "Quantity is required."
+		}),
 		machine: Joi.string().required().messages({
 			"string.empty": "Machine is required."
 		}),
@@ -273,6 +276,9 @@ const sparePartsEditValidation = (data) => {
 	const schema = Joi.object({
 		Name: Joi.string().required().messages({
 			"string.empty": "Name is required."
+		}),
+		Quantity: Joi.string().required().messages({
+			"string.empty": "Quantity is required."
 		}),
 		// Machine: Joi.string().required().messages({
 		// 	"string.empty": "Machine is required."

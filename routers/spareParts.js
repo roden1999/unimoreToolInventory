@@ -20,6 +20,7 @@ router.post("/", verify, async (request, response) => {
 	//Create new spare parts
 	const newSP = new sparePartsModel({
 		Name: request.body.name,
+		Quantity: request.body.quantity,
 		Machine: request.body.machine,
 		Description: request.body.description,
 		Remarks: request.body.remarks,
@@ -75,6 +76,7 @@ router.post("/list", verify, async (request, response) => {
 				var sparePart = {
 					"_id": sp[i]._id,
 					"Name": sp[i].Name,
+                    "Quantity": sp[i].Quantity,
 					"Machine": sp[i].Machine,
 					"Description": sp[i].Description,
 					"Remarks": sp[i].Remarks,
@@ -90,6 +92,7 @@ router.post("/list", verify, async (request, response) => {
 				var sparePart = {
 					"_id": sp[i]._id,
 					"Name": sp[i].Name,
+					"Quantity": sp[i].Quantity,
 					"Machine": sp[i].Machine,
 					"Description": sp[i].Description,
 					"Remarks": sp[i].Remarks,

@@ -5,6 +5,10 @@ const sparePartSchema = new mongoose.Schema({
 		type: String,
 		required: true,
     },
+	Quantity: {
+		type: Number,
+		required: true
+	},
 	Machine: {
 		type: String,
         required: true

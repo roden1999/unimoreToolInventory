@@ -21,7 +21,7 @@ router.post("/", verify, async (request, response) => {
 	const newTool = new toolsModel({
 		SerialNo: request.body.serialNo,
 		Name: request.body.name,
-		Brand: request.body.brand,
+		Brand: request.body.brand !== "" ? request.body.brand : "No Brand",
 		Category: request.body.category,
 		DatePurchased: request.body.datePurchased,
 		Location: request.body.location,
@@ -44,7 +44,7 @@ router.put("/:id", verify, async (request, response) => {
 		//Check if employee number exist
 		const toolsExist = await toolsModel.findOne({
 			SerialNo: request.body.SerialNo,
-			_id: { $ne: request.params.id}
+			_id: { $ne: request.params.id }
 		});
 		if (toolsExist)
 			return response.status(400).send("This Serial No. was already taken.");
@@ -67,7 +67,7 @@ router.put("/:id", verify, async (request, response) => {
 router.post("/list", verify, async (request, response) => {
 	try {
 		var page = request.body.page !== "" ? request.body.page : 0;
-        var perPage = 12;
+		var perPage = 12;
 		if (Object.keys(request.body.selectedTools).length > 0) {
 			var id = [];
 			var data = request.body.selectedTools;
@@ -116,6 +116,24 @@ router.post("/list", verify, async (request, response) => {
 
 			response.status(200).json(data);
 		}
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+
+// brand filter options
+router.get("/brand-options", async (request, response) => {
+	try {
+		// const data = await timeLogsModel.find().sort('employeeName');
+		const data = await toolsModel.find({ IsDeleted: false }).sort('Brand');
+		const unique = [];
+		data.map(x => unique.filter(a => a.brand === x.Brand).length > 0 ? null : unique.push({
+			_id: x.id,
+			brand: x.Brand
+		}));
+		let logs = [...new Set(unique)];
+
+		response.status(200).json(logs);
 	} catch (error) {
 		response.status(500).json({ error: error.message });
 	}

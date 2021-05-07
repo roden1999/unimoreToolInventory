@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, Card, Icon, Form, Pagination } from 'semantic-ui-react'
+import { Modal, Button, Card, Icon, Form, Pagination, Popup } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -49,6 +49,11 @@ const Tools = () => {
     const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState([]);
+    const [brandFilter, setBrandFilter] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [brandOptions, setBrandOptions] = useState(null);
+    const [selectedBrand, setSelectedBrand] = useState("");
     const [toolsOptions, setToolsOptions] = useState("");
     const [totalTools, setTotalTools] = useState(0);
     const [toolPage, setToolPage] = useState(1);
@@ -174,6 +179,39 @@ const Tools = () => {
         return list;
     }
 
+    useEffect(() => {
+        var route = "tools/brand-options";
+        var url = window.apihost + route;
+        // var token = sessionStorage.getItem("auth-token");
+        axios
+            .get(url)
+            .then(function (response) {
+                // handle success
+                if (Array.isArray(response.data)) {
+                    setBrandOptions(response.data);
+                } else {
+                    var obj = [];
+                    obj.push(response.data);
+                    setBrandOptions(obj);
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .finally(function () {
+                // always executed
+            });
+    }, [brandOptions, selectedBrand]);
+
+    const brandOptionList = brandOptions
+        ? brandOptions.map((x) => ({
+            id: x._id,
+            brand: x.brand
+
+        }))
+        : [];
+
     const handleAddTools = () => {
         var route = "tools/";
         var url = window.apihost + route;
@@ -248,7 +286,7 @@ const Tools = () => {
         var data = {
             SerialNo: serialNo,
             Name: name,
-            Brand: brand,
+            Brand: brand !== "" ? brand : "No Brand",
             Category: category ? category.value : "",
             DatePurchased: datePurchased,
             Location: location,
@@ -397,6 +435,19 @@ const Tools = () => {
         return list;
     }
 
+    function BrandOption(item) {
+        var list = [];
+        if (item !== undefined || item !== null) {
+            item.map((x) => {
+                return list.push({
+                    label: x.brand !== "" ? x.brand : "No Brand",
+                    value: x.brand,
+                });
+            });
+        }
+        return list;
+    }
+
     return (
         <div>
             <ToastContainer />
@@ -425,6 +476,88 @@ const Tools = () => {
                     styles={customSelectStyle}
                 />
             </div>
+
+            <Popup
+                on='click'
+                pinned
+                size='huge'
+                flowing
+                position="bottom center"
+                trigger={
+                    <Button icon size='large' style={{ float: 'right' }}>
+                        <Icon name='filter' />
+                    </Button>
+                }
+            >
+                <div class="ui link celled selection list" style={{ "padding": "20px", "width": "300px" }}>
+                    <h2>Filter</h2>
+                    <Form>
+                        <label><strong>Brand</strong></label>
+                        <Select
+                            defaultValue={brandFilter}
+                            options={BrandOption(brandOptionList)}
+                            onChange={e => setBrandFilter(e)}
+                            placeholder='Brand...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+
+                        <br />
+
+                        <label><strong>Category</strong></label>
+                        <Select
+                            defaultValue={categoryFilter}
+                            options={CategoryOption()}
+                            onChange={e => setCategoryFilter(e)}
+                            placeholder='Category...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+                        <br />
+
+                        <label><strong>Status</strong></label>
+                        <Select
+                            defaultValue={statusFilter}
+                            options={StatusOption()}
+                            onChange={e => setStatusFilter(e)}
+                            placeholder='Category...'
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
+                    </Form>
+                    <div style={{ marginTop: 20, alignContent: 'center', float: 'center' }}>
+                        <Button><Icon name='close' /> Clear</Button>
+                        <Button><Icon name='search' /> Search</Button>
+                    </div>
+                </div>
+            </Popup>
 
             <div style={{ paddingTop: 50, }}>
                 <Card.Group itemsPerRow={4} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>

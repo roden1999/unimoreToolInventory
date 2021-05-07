@@ -80,7 +80,7 @@ router.post("/add-item", verify, async (request, response) => {
         IssuedBy: request.body.issuedBy,
     });
 
-    var qty = item.Used + request.body.used;
+    var qty = item.Used + parseInt(request.body.used);
 
     const updates = {
         Used: qty,

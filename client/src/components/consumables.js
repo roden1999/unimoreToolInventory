@@ -204,7 +204,7 @@ const Consumables = () => {
                 setId(-1);
                 setName("");
                 setBrand("");
-                setUnit(null);
+                setUnit([]);
                 setDatePurchased("");
                 setDescription("");
                 setQuantity(0);
@@ -378,6 +378,8 @@ const Consumables = () => {
             { value: "Meters", label: "Meters" },
             { value: "Litters", label: "Litters" },
             { value: "Package", label: "Package" },
+            { value: "Kilogram", label: "Kilogram" },
+            { value: "Miligram", label: "Miligram" },
         ];
         return list;
     }
@@ -511,7 +513,7 @@ const Consumables = () => {
                             defaultValue={unit}
                             options={UnitOption()}
                             onChange={e => setUnit(e)}
-                            placeholder='Status...'
+                            placeholder='Unit...'
                             theme={(theme) => ({
                                 ...theme,
                                 // borderRadius: 0,
@@ -609,7 +611,7 @@ const Consumables = () => {
                             defaultValue={unit}
                             options={UnitOption()}
                             onChange={e => setUnit(e)}
-                            placeholder='Status...'
+                            placeholder='Unit...'
                             theme={(theme) => ({
                                 ...theme,
                                 // borderRadius: 0,

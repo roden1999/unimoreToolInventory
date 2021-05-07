@@ -46,6 +46,7 @@ const MachineSpareParts = () => {
     const [spOptions, setSpOptions] = useState([]);
     const [id, setId] = useState(-1);
     const [name, setName] = useState("");
+    const [quantity, setQuantity] = useState(0);
     const [machine, setMachine] = useState("");
     const [description, setDescription] = useState("");
     const [remarks, setRemarks] = useState("");
@@ -100,6 +101,7 @@ const MachineSpareParts = () => {
         ? spData.map((x) => ({
             id: x._id,
             name: x.Name,
+            quantity: x.Quantity,
             machine: x.Machine,
             description: x.Description,
             remarks: x.Remarks,
@@ -195,6 +197,7 @@ const MachineSpareParts = () => {
 
         var data = {
             name: name,
+            quantity: quantity,
             machine: machine,
             description: description,
             remarks: remarks,
@@ -218,6 +221,7 @@ const MachineSpareParts = () => {
                 setLoader(false);
                 setId(-1);
                 setName("");
+                setQuantity(0);
                 // setMachine("");
                 setDescription("");
                 setRemarks("");
@@ -240,6 +244,7 @@ const MachineSpareParts = () => {
         setLoader(false);
         setId(-1);
         setName("");
+        setQuantity(0);
         // setMachine("");
         setDescription("");
         setRemarks("");
@@ -251,6 +256,7 @@ const MachineSpareParts = () => {
         setEditModal(true);
         setId(params.id);
         setName(params.name);
+        setQuantity(params.quantity);
         setDescription(params.description);
         setRemarks(params.remarks);
         setStatus(st);
@@ -263,6 +269,7 @@ const MachineSpareParts = () => {
 
         var data = {
             Name: name,
+            Quantity: quantity,
             // machine: machine,
             Description: description,
             Remarks: remarks,
@@ -286,6 +293,7 @@ const MachineSpareParts = () => {
                 setLoader(false);
                 setId(-1);
                 setName("");
+                setQuantity(0);
                 // setMachine("");
                 setDescription("");
                 setRemarks("");
@@ -308,6 +316,7 @@ const MachineSpareParts = () => {
         setLoader(false);
         setId(-1);
         setName("");
+        setQuantity(0);
         // setMachine("");
         setDescription("");
         setRemarks("");
@@ -365,6 +374,7 @@ const MachineSpareParts = () => {
         setLoader(false);
         setId(-1);
         setName("");
+        setQuantity(0);
         // setMachine("");
         setDescription("");
         setRemarks("");
@@ -416,11 +426,19 @@ const MachineSpareParts = () => {
                         </Menu.Item>
 
                         <Menu.Item
-                            active={spFilter === 'CORRUGATED'}
-                            onClick={() => handleSpPage("CORRUGATED")}
+                            active={spFilter === 'OLD CORRUGATED'}
+                            onClick={() => handleSpPage("OLD CORRUGATED")}
                             color="blue"
                         >
-                            <h4>CORRUGATED</h4>
+                            <h4>OLD CORRUGATED</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'NEW CORRUGATED'}
+                            onClick={() => handleSpPage("NEW CORRUGATED")}
+                            color="blue"
+                        >
+                            <h4>NEW CORRUGATED</h4>
                         </Menu.Item>
 
                         <Menu.Item
@@ -445,6 +463,22 @@ const MachineSpareParts = () => {
                             color="blue"
                         >
                             <h4>SHEARLINE</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'NEW HIGHSPEED DF'}
+                            onClick={() => handleSpPage("NEW HIGHSPEED DF")}
+                            color="blue"
+                        >
+                            <h4>NEW HIGHSPEED DF</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'OLD DF 98-92'}
+                            onClick={() => handleSpPage("OLD DF 98-92")}
+                            color="blue"
+                        >
+                            <h4>OLD DF 98-92</h4>
                         </Menu.Item>
 
                         <Menu.Item
@@ -488,6 +522,14 @@ const MachineSpareParts = () => {
                         </Menu.Item>
 
                         <Menu.Item
+                            active={spFilter === 'STUD 76'}
+                            onClick={() => handleSpPage("STUD 76")}
+                            color="blue"
+                        >
+                            <h4>STUD 76</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
                             active={spFilter === 'WALL ANGLE'}
                             onClick={() => handleSpPage("WALL ANGLE")}
                             color="blue"
@@ -501,6 +543,22 @@ const MachineSpareParts = () => {
                             color="blue"
                         >
                             <h4>SPANDREL</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'DRUM CORRUGATED'}
+                            onClick={() => handleSpPage("DRUM CORRUGATED")}
+                            color="blue"
+                        >
+                            <h4>DRUM CORRUGATED</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'HAT TYPE BATTEN'}
+                            onClick={() => handleSpPage("HAT TYPE BATTEN")}
+                            color="blue"
+                        >
+                            <h4>HAT TYPE BATTEN</h4>
                         </Menu.Item>
 
                         <Menu.Item
@@ -520,11 +578,51 @@ const MachineSpareParts = () => {
                         </Menu.Item>
 
                         <Menu.Item
-                            active={spFilter === 'OVERHEAD'}
-                            onClick={() => handleSpPage("OVERHEAD")}
+                            active={spFilter === 'MANUAL SLITTER'}
+                            onClick={() => handleSpPage("MANUAL SLITTER")}
                             color="blue"
                         >
-                            <h4>OVERHEAD</h4>
+                            <h4>MANUAL SLITTER</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'OVERHEAD CRANE'}
+                            onClick={() => handleSpPage("OVERHEAD CRANE")}
+                            color="blue"
+                        >
+                            <h4>OVERHEAD CRANE</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'SUSPENDED BAR'}
+                            onClick={() => handleSpPage("SUSPENDED BAR")}
+                            color="blue"
+                        >
+                            <h4>SUSPENDED BAR</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'RIDGE CAP'}
+                            onClick={() => handleSpPage("RIDGE CAP")}
+                            color="blue"
+                        >
+                            <h4>RIDGE CAP</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'AUTO UNCOILER 1'}
+                            onClick={() => handleSpPage("AUTO UNCOILER 1")}
+                            color="blue"
+                        >
+                            <h4>AUTO UNCOILER 1</h4>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            active={spFilter === 'AUTO UNCOILER 2'}
+                            onClick={() => handleSpPage("AUTO UNCOILER 2")}
+                            color="blue"
+                        >
+                            <h4>AUTO UNCOILER 2</h4>
                         </Menu.Item>
                     </div>
                 </Menu>
@@ -575,6 +673,7 @@ const MachineSpareParts = () => {
                                     {<Table.Header>
                                         <Table.Row>
                                             <Table.HeaderCell>Name</Table.HeaderCell>
+                                            <Table.HeaderCell textAlign='right'>Quantity</Table.HeaderCell>
                                             <Table.HeaderCell>Description</Table.HeaderCell>
                                             <Table.HeaderCell>Remarks</Table.HeaderCell>
                                             <Table.HeaderCell>Status</Table.HeaderCell>
@@ -586,6 +685,7 @@ const MachineSpareParts = () => {
                                         {spList !== null && loader !== true && spList.map(x =>
                                             <Table.Row>
                                                 <Table.Cell>{x.name}</Table.Cell>
+                                                <Table.Cell textAlign='right'>{x.quantity}</Table.Cell>
                                                 <Table.Cell>{x.description}</Table.Cell>
                                                 <Table.Cell>{x.remarks}</Table.Cell>
                                                 <Table.Cell
@@ -662,6 +762,18 @@ const MachineSpareParts = () => {
                             size='medium'
                             value={name}
                             onChange={e => setName(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Quantity'
+                            placeholder='quantity'
+                            id='form-input-quantity'
+                            size='medium'
+                            type="number"
+                            min="0"
+                            value={quantity}
+                            onChange={e => setQuantity(e.target.value)}
                         />
 
                         {/* <Form.Input
@@ -741,6 +853,18 @@ const MachineSpareParts = () => {
                             size='medium'
                             value={name}
                             onChange={e => setName(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Quantity'
+                            placeholder='quantity'
+                            id='form-input-quantity'
+                            size='medium'
+                            type="number"
+                            min="0"
+                            value={quantity}
+                            onChange={e => setQuantity(e.target.value)}
                         />
 
                         {/* <Form.Input
