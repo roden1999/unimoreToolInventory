@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Card, Form, Icon, Popup } from 'semantic-ui-react'
+import { Button, Card, Form, Icon, Popup, Image } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import UserContext from './context/userContext';
 const axios = require('axios');
@@ -120,7 +120,10 @@ const Login = (props) => {
             background: '#F3F1F1',
         }}>
             <Card link style={{ margin: '0 auto', width: '30%' }}>
-                <h1 style={{ textAlign: 'center', marginTop: 10, marginBottom: 10 }}>Logo</h1>
+                {/* <h1 style={{ textAlign: 'center', marginTop: 10, marginBottom: 10 }}>Logo</h1> */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+                    <Image src="unimore-logo-landscape.png" size='large' style={{ backgroundColor: 'white' }} />
+                </div>
                 <h6 style={{ textAlign: 'center', marginTop: 10, marginBottom: 5, color: 'red' }}>{errSignInMsg}</h6>
                 <div style={{ paddingLeft: 30, paddingRight: 30, }}>
                     <Form>
