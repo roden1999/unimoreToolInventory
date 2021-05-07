@@ -75,8 +75,35 @@ router.post("/list", verify, async (request, response) => {
 				// console.log(`_id: ${request.body[i].value}`);
 				id.push({ _id: request.body.selectedTools[i].value });
 			}
+
+			var filter = "";
+			if (Object.keys(request.body.brandFilter).length > 0) {
+				filter = `this.Brand == "${request.body.brandFilter.value}"`;
+			}
+
+			if (Object.keys(request.body.brandFilter).length === 0) {
+				filter = `this.Brand !== ""`;
+			}
+
+			if (Object.keys(request.body.categoryFilter).length > 0) {
+				filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+			}
+
+			if (Object.keys(request.body.categoryFilter).length === 0) {
+				filter = filter + " " + `&& this.Category !== ""`;
+			}
+
+			if (Object.keys(request.body.statusFilter).length > 0) {
+				filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+			}
+
+			if (Object.keys(request.body.statusFilter).length === 0) {
+				filter = filter + " " + `&& this.Status !== ""`;
+			}
+
 			const tools = await toolsModel.find({
 				'$or': id,
+				'$where': filter,
 				IsDeleted: false
 			}).skip((page - 1) * perPage).limit(perPage).sort('Name');
 
@@ -97,7 +124,32 @@ router.post("/list", verify, async (request, response) => {
 			}
 			response.status(200).json(data);
 		} else {
-			const tools = await toolsModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('Name');
+			var filter = "";
+			if (Object.keys(request.body.brandFilter).length > 0) {
+				filter = `this.Brand == "${request.body.brandFilter.value}"`;
+			}
+
+			if (Object.keys(request.body.brandFilter).length === 0) {
+				filter = `this.Brand !== ""`;
+			}
+
+			if (Object.keys(request.body.categoryFilter).length > 0) {
+				filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+			}
+
+			if (Object.keys(request.body.categoryFilter).length === 0) {
+				filter = filter + " " + `&& this.Category !== ""`;
+			}
+
+			if (Object.keys(request.body.statusFilter).length > 0) {
+				filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+			}
+
+			if (Object.keys(request.body.statusFilter).length === 0) {
+				filter = filter + " " + `&& this.Status !== ""`;
+			}
+
+			const tools = await toolsModel.find({ IsDeleted: false, '$where': filter }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in tools) {
 				var tool = {
@@ -155,6 +207,41 @@ router.get("/total-tools", async (request, response) => {
 router.get("/search-options", verify, async (request, response) => {
 	try {
 		const tools = await toolsModel.find({ IsDeleted: false }).sort('Name');
+		response.status(200).json(tools);
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+
+router.post("/search-options", verify, async (request, response) => {
+	try {
+		var filter = "";
+		if (Object.keys(request.body.brandFilter).length > 0) {
+			filter = `this.Brand == "${request.body.brandFilter.value}"`;
+		}
+
+		if (Object.keys(request.body.brandFilter).length === 0) {
+			filter = `this.Brand !== ""`;
+		}
+
+		if (Object.keys(request.body.categoryFilter).length > 0) {
+			filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+		}
+
+		if (Object.keys(request.body.categoryFilter).length === 0) {
+			filter = filter + " " + `&& this.Category !== ""`;
+		}
+
+		if (Object.keys(request.body.statusFilter).length > 0) {
+			filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+		}
+
+		if (Object.keys(request.body.statusFilter).length === 0) {
+			filter = filter + " " + `&& this.Status !== ""`;
+		}
+
+		const tools = await toolsModel.find({ IsDeleted: false, $where: filter }).sort('Name');
+
 		response.status(200).json(tools);
 	} catch (error) {
 		response.status(500).json({ error: error.message });

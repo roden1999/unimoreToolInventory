@@ -57,6 +57,7 @@ const Tools = () => {
     const [toolsOptions, setToolsOptions] = useState("");
     const [totalTools, setTotalTools] = useState(0);
     const [toolPage, setToolPage] = useState(1);
+    const [popUpState, setPopUpState] = useState(false);
 
     const boundaryRange = 1;
     const siblingRange = 1;
@@ -67,6 +68,9 @@ const Tools = () => {
     useEffect(() => {
         var data = {
             selectedTools: !selectedTools ? [] : selectedTools,
+            brandFilter: !brandFilter ? [] : brandFilter,
+            categoryFilter: !categoryFilter ? [] : categoryFilter,
+            statusFilter: !statusFilter ? [] : statusFilter,
             page: toolPage
         };
         var route = "tools/list";
@@ -94,7 +98,7 @@ const Tools = () => {
             .finally(function () {
                 // always executed
             });
-    }, [selectedTools, loader, toolPage]);
+    }, [selectedTools, loader, toolPage, brandFilter, categoryFilter, statusFilter]);
 
     const toolsList = toolsData
         ? toolsData.map((x) => ({
@@ -135,8 +139,14 @@ const Tools = () => {
         var url = window.apihost + route;
         var token = sessionStorage.getItem("auth-token");
 
+        var data = {
+            brandFilter: !brandFilter ? [] : brandFilter,
+            categoryFilter: !categoryFilter ? [] : categoryFilter,
+            statusFilter: !statusFilter ? [] : statusFilter,
+        };
+
         axios
-            .get(url, {
+            .post(url, data, {
                 headers: { "auth-token": token },
             })
             .then(function (response) {
@@ -156,7 +166,7 @@ const Tools = () => {
             .finally(function () {
                 // always executed
             });
-    }, [loader]);
+    }, [loader, brandFilter, categoryFilter, statusFilter]);
 
     const toolsOptionsList = toolsOptions
         ? toolsOptions.map((x) => ({
@@ -448,6 +458,13 @@ const Tools = () => {
         return list;
     }
 
+    const handleClearFilter = () => {
+        setPopUpState(false);
+        setBrandFilter(null);
+        setCategoryFilter(null);
+        setStatusFilter(null);
+    }
+
     return (
         <div>
             <ToastContainer />
@@ -479,6 +496,9 @@ const Tools = () => {
 
             <Popup
                 on='click'
+                open={popUpState}
+                onOpen={() => setPopUpState(true)}
+                onClose={() => setPopUpState(false)}
                 pinned
                 size='huge'
                 flowing
@@ -498,6 +518,7 @@ const Tools = () => {
                             options={BrandOption(brandOptionList)}
                             onChange={e => setBrandFilter(e)}
                             placeholder='Brand...'
+                            isClearable
                             theme={(theme) => ({
                                 ...theme,
                                 // borderRadius: 0,
@@ -519,6 +540,7 @@ const Tools = () => {
                             options={CategoryOption()}
                             onChange={e => setCategoryFilter(e)}
                             placeholder='Category...'
+                            isClearable
                             theme={(theme) => ({
                                 ...theme,
                                 // borderRadius: 0,
@@ -539,6 +561,7 @@ const Tools = () => {
                             options={StatusOption()}
                             onChange={e => setStatusFilter(e)}
                             placeholder='Category...'
+                            isClearable
                             theme={(theme) => ({
                                 ...theme,
                                 // borderRadius: 0,
@@ -552,9 +575,10 @@ const Tools = () => {
                             styles={customSelectStyle}
                         />
                     </Form>
-                    <div style={{ marginTop: 20, alignContent: 'center', float: 'center' }}>
-                        <Button><Icon name='close' /> Clear</Button>
-                        <Button><Icon name='search' /> Search</Button>
+                    <div style={{ marginTop: 20, alignContent: 'center', float: 'center', display: 'flex', justifyContent: 'center' }}>
+                        <Button onClick={handleClearFilter} style={{ margin: '0 auto' }}>
+                            <Icon name='close' /> Clear All
+                        </Button>
                     </div>
                 </div>
             </Popup>
