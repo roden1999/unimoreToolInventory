@@ -380,6 +380,7 @@ const Consumables = () => {
             { value: "Package", label: "Package" },
             { value: "Kilogram", label: "Kilogram" },
             { value: "Miligram", label: "Miligram" },
+            { value: "Gallon", label: "Gallon" },
         ];
         return list;
     }
