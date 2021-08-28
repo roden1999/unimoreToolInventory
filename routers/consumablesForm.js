@@ -55,11 +55,12 @@ router.post("/add-item", verify, async (request, response) => {
 
     //Check if item exist
     const itemExist = await consumableFormModel.findOne({
+        EmployeeId: request.body.employeeId,
         ConsumableId: request.body.consumableId,
         ProjectId: request.body.project,
     });
     if (itemExist)
-        return response.status(400).send("Item already exist in this form.");
+        return response.status(400).send(`${itemExist.EmployeeId} already borrowed this item.`);
     const item = await consumableModel.findById(request.body.consumableId);
     const options = { new: true };
 
@@ -204,11 +205,13 @@ router.put("/subtract-quantity/:id", async (request, response) => {
 //List of Projects
 router.post("/list", verify, async (request, response) => {
     try {
-        if (Object.keys(request.body).length > 0) {
+        var page = request.body.page !== "" ? request.body.page : 0;
+		var perPage = 5;
+        if (Object.keys(request.body.selectedProject).length > 0) {
             var id = [];
-            var data = request.body;
+            var data = request.body.selectedProject;
             for (const i in data) {
-                id.push({ _id: request.body[i].value });
+                id.push({ _id: request.body.selectedProject[i].value });
             }
             const projects = await projectModel.find({
                 '$or': id,
@@ -253,7 +256,7 @@ router.post("/list", verify, async (request, response) => {
             }
             response.status(200).json(data);
         } else {
-            const projects = await projectModel.find({ IsDeleted: false, FormType: "Consumables" }).sort('-Date');
+            const projects = await projectModel.find({ IsDeleted: false, FormType: "Consumables" }).skip((page) * perPage).limit(perPage).sort('-Date');
             var data = [];
             for (const i in projects) {
                 var consumableData = [];

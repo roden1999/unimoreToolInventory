@@ -36,7 +36,7 @@ const customSelectStyle = {
 const Projects = () => {
     const [projectData, setProjectData] = useState(null);
     const [projectOptions, setProjectOptions] = useState(null);
-    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedProject, setSelectedProject] = useState([]);
     const [loader, setLoader] = useState(false);
     const [id, setId] = useState(-1);
     const [projectName, setProjectName] = useState("");
@@ -58,7 +58,7 @@ const Projects = () => {
     const [editItem, setEditItem] = useState(false);
     const [itemId, setItemId] = useState(-1);
     const [totalForm, setTotalForm] = useState(0);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
 
     const boundaryRange = 1;
     const siblingRange = 1;
@@ -649,7 +649,7 @@ const Projects = () => {
             </div>
 
             <div style={{ paddingTop: 50, }}>
-                <Card.Group itemsPerRow={1} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
+                <Card.Group itemsPerRow={1} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '70vh', }}>
                     {projectsList !== null && loader !== true && projectsList.map(x =>
                         <Card color='blue' key={x.id}>
                             <Card.Content>
@@ -728,21 +728,23 @@ const Projects = () => {
                     </div>
                 }
 
-                <Pagination
-                    activePage={page}
-                    boundaryRange={boundaryRange}
-                    onPageChange={(e, { activePage }) => setPage(activePage)}
-                    size='mini'
-                    siblingRange={siblingRange}
-                    totalPages={totalForm / 5}
-                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
-                    ellipsisItem={showEllipsis ? undefined : null}
-                    firstItem={showFirstAndLastNav ? undefined : null}
-                    lastItem={showFirstAndLastNav ? undefined : null}
-                    prevItem={showPreviousAndNextNav ? undefined : null}
-                    nextItem={showPreviousAndNextNav ? undefined : null}
-                    style={{ float: 'right', marginTop: 20 }}
-                />
+                {Object.keys(selectedProject).length === 0 &&
+                    < Pagination
+                        activePage={page}
+                        boundaryRange={boundaryRange}
+                        onPageChange={(e, { activePage }) => setPage(activePage)}
+                        size='mini'
+                        siblingRange={siblingRange}
+                        totalPages={totalForm / 5}
+                        // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                        ellipsisItem={showEllipsis ? undefined : null}
+                        firstItem={showFirstAndLastNav ? undefined : null}
+                        lastItem={showFirstAndLastNav ? undefined : null}
+                        prevItem={showPreviousAndNextNav ? undefined : null}
+                        nextItem={showPreviousAndNextNav ? undefined : null}
+                        style={{ float: 'right', marginTop: 20 }}
+                    />
+                }
             </div>
 
             <Modal
