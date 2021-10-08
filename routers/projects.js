@@ -72,7 +72,7 @@ router.post("/list", verify, async (request, response) => {
                 '$or': id,
                 FormType: "Tools",
                 IsDeleted: false
-            }).skip((page - 1) * perPage).limit(perPage).sort('-Date');
+            }).skip((page) * perPage).limit(perPage).sort('-Date');
 
             var data = [];
             for (const i in projects) {
@@ -113,7 +113,7 @@ router.post("/list", verify, async (request, response) => {
             }
             response.status(200).json(data);
         } else {
-            const projects = await projectModel.find({ IsDeleted: false, FormType: "Tools" }).skip((page - 1) * perPage).limit(perPage).sort('-Date');
+            const projects = await projectModel.find({ IsDeleted: false, FormType: "Tools" }).skip((page) * perPage).limit(perPage).sort('-Date');
             var data = [];
             for (const i in projects) {
                 var borrowedTools = [];
