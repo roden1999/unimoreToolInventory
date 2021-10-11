@@ -198,6 +198,7 @@ const Records = () => {
             employeeName: x.EmployeeName,
             dateBorrowed: x.DateBorrowed,
             project: x.Project,
+            dateReturned: x.DateReturned,
             processedBy: x.ProcessedBy,
             receivedBy: x.ReceivedBy,
             status: x.Status
@@ -626,7 +627,7 @@ const Records = () => {
             // employeeId: employeeId,
             // dateBorrowed: dateBorrowed,
             // project: project,
-            DateReturned: moment().format("MM/DD/yyyy"),
+            DateReturned: moment(),
             Status: "Returned",
             // processedBy: "",
             ReceivedBy: processedBy
@@ -784,7 +785,7 @@ const Records = () => {
                                     <Table.Cell>{x.employeeName}</Table.Cell>
                                     <Table.Cell>{x.dateBorrowed !== "" ? moment(x.dateBorrowed).format("MMMM DD, yyyy") : ""}</Table.Cell>
                                     <Table.Cell>{x.processedBy}</Table.Cell>
-                                    <Table.Cell>{x.dateBorrowed !== "" ? moment(x.dateBorrowed).format("MMMM DD, yyyy") : ""}</Table.Cell>
+                                    <Table.Cell>{x.dateReturned !== "" ? moment(x.dateReturned).format("MMMM DD, yyyy | HH:mm a") : ""}</Table.Cell>
                                     <Table.Cell>{x.receivedBy}</Table.Cell>
                                     <Table.Cell textAlign='center'>
                                         <Label color='green' horizontal>

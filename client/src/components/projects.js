@@ -521,7 +521,7 @@ const Projects = () => {
             // employeeId: employeeId,
             // dateBorrowed: dateBorrowed,
             // project: project,
-            DateReturned: moment().format("MM/DD/yyyy"),
+            DateReturned: moment(),
             Status: "Returned",
             // processedBy: "",
             ReceivedBy: processedBy
@@ -679,7 +679,7 @@ const Projects = () => {
                                                     <TableCell>{y.EmployeeName}</TableCell>
                                                     <TableCell>{moment(y.DateBorrowed).format("MMM DD, yyyy")}</TableCell>
                                                     <TableCell style={{ textAlign: 'center' }}>{y.Status === "Returned" ? <Icon color='green' size='large' name='checkmark' /> : ""}</TableCell>
-                                                    <TableCell>{y.DateReturned ? moment(y.DateReturned).format("MMM DD, yyyy") : ""}</TableCell>
+                                                    <TableCell>{y.DateReturned ? moment(y.DateReturned).format("MMM DD, yyyy | HH:mm a") : ""}</TableCell>
                                                     <TableCell style={{ textAlign: 'center' }}>
                                                         <div className='ui one buttons'>
                                                             {y.Status !== "Returned" ?
