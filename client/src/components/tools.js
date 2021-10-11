@@ -432,7 +432,7 @@ const Tools = () => {
         var list = [
             { value: "Good", label: "Good" },
             { value: "For Repair", label: "For Repair" },
-            { value: "Damaged", label: "Damaged" },
+            { value: "For Replacement", label: "For Replacement" },
         ];
         return list;
     }
@@ -613,12 +613,12 @@ const Tools = () => {
                                         </a>
                                     }
                                     {x.status === "For Repair" &&
-                                        <a style={{ color: "blue" }}>
+                                        <a style={{ color: "orange" }}>
                                             <Icon name='info circle' />
                                             <b>Status:</b> {x.status}
                                         </a>
                                     }
-                                    {x.status === "Damaged" &&
+                                    {x.status === "For Replacement" &&
                                         <a style={{ color: "red" }}>
                                             <Icon name='info circle' />
                                             <b>Status:</b> {x.status}
