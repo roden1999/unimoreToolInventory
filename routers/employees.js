@@ -114,7 +114,8 @@ router.post("/list", verify, async (request, response) => {
 					var toolName = await toolModel.findById(records[i].ToolId);
 					var tools = {
 						"id": records[i]._id,
-						"toolName": toolName,
+						"toolName": toolName.Name,
+						"serialNo": toolName.SerialNo,
 						"dateBorrowed": records[i].DateBorrowed,
 						"project": records[i].Project,
 						"dateReturned": records[i].DateReturned,
@@ -136,7 +137,7 @@ router.post("/list", verify, async (request, response) => {
 					"Image": employees[i].Image,
 
 					"TotalBorrowed": TotalBorrowed,
-					"BorrowedTools": [BorrowedTools]
+					"BorrowedTools": BorrowedTools
 				}
 				data.push(emp);
 			}
