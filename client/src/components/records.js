@@ -692,7 +692,7 @@ const Records = () => {
             </div>
 
             <div style={{ paddingTop: 50, }}>
-                <h3 style={{ textAlign: 'center' }}>Borrowed</h3>
+                <h3 style={{ textAlign: 'center' }}><Label color="grey"><h4>Borrowed</h4></Label></h3>
                 <div style={{ overflowY: 'auto', width: '100%', height: '100%', minHeight: '35vh', maxHeight: '35vh', backgroundColor: '#EEEEEE', }}>
                     <Table celled>
                         <Table.Header>
@@ -761,7 +761,7 @@ const Records = () => {
             </div>
 
             <div style={{ paddingTop: 50, }}>
-                <h3 style={{ textAlign: 'center' }}>Returned</h3>
+                <h3 style={{ textAlign: 'center' }}><Label color="grey"><h4>Returned</h4></Label></h3>
                 <div style={{ overflowY: 'auto', width: '100%', height: '100%', minHeight: '35vh', maxHeight: '35vh', backgroundColor: '#EEEEEE', }}>
                     <Table celled role="grid" aria-labelledby="header">
                         <Table.Header style={{ position: 'sticky', top: 0, zIndex: 2 }}>
