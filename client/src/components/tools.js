@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, Card, Icon, Form, Pagination, Popup } from 'semantic-ui-react'
+import { Modal, Button, Card, Icon, Form, Pagination, Popup, Table } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -471,7 +471,7 @@ const Tools = () => {
             <Button size='large' style={{ float: 'left' }} onClick={() => setAddModal(true)}><Icon name='plus' />Add Tool</Button>
 
             <div style={{
-                float: 'right', width: '30%', zIndex: 100,
+                float: 'right', width: '30%', zIndex: 100, marginBottom: 30,
             }}>
                 <Select
                     defaultValue={selectedTools}
@@ -583,8 +583,68 @@ const Tools = () => {
                 </div>
             </Popup>
 
-            <div style={{ paddingTop: 50, }}>
-                <Card.Group itemsPerRow={4} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
+            <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
+                <Table celled size='large'>
+                    <Table.Header style={{ position: "sticky", top: 0 }}>
+                        <Table.Row>
+                            <Table.HeaderCell rowSpan='2'>Name</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Serial No.</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Brand</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Category</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Date Purchased</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Status</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Location</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Description</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    {toolsList !== null && loader !== true && toolsList.map(x =>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>{x.name}</Table.Cell>
+                                <Table.Cell>{x.serialNo}</Table.Cell>
+                                <Table.Cell>{x.brand ? x.brand : "No Brand"}</Table.Cell>
+                                <Table.Cell>{x.category}</Table.Cell>
+                                <Table.Cell>{x.datePurchased ? moment(x.datePurchased).format("MM/DD/yyyy") : "No Date"}</Table.Cell>
+                                <Table.Cell>
+                                    {x.status === "Good" &&
+                                        <a style={{ color: "green" }}>
+                                            <Icon name='info circle' />
+                                            {x.status}
+                                        </a>
+                                    }
+                                    {x.status === "For Repair" &&
+                                        <a style={{ color: "orange" }}>
+                                            <Icon name='info circle' />
+                                            {x.status}
+                                        </a>
+                                    }
+                                    {x.status === "For Replacement" &&
+                                        <a style={{ color: "red" }}>
+                                            <Icon name='info circle' />
+                                            {x.status}
+                                        </a>
+                                    }
+                                </Table.Cell>
+                                <Table.Cell>{x.location}</Table.Cell>
+                                <Table.Cell>{x.description}</Table.Cell>
+                                <Table.Cell style={{ textAlign: 'center' }}>
+                                    <div className='ui two buttons'>
+                                        <Button basic color='grey' onClick={() => handleOpenEditModal(x)}>
+                                            Edit
+                                        </Button>
+                                        <Button basic color='grey' onClick={() => handleOpenDeletePopup(x.id)}>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                    )}
+                </Table>
+
+                {/*  <Card.Group itemsPerRow={4} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
                     {toolsList !== null && loader !== true && toolsList.map(x =>
                         <Card color='blue'>
                             <Card.Content>
@@ -639,7 +699,7 @@ const Tools = () => {
                             </Card.Content>
                         </Card>
                     )}
-                </Card.Group>
+                </Card.Group> */}
 
                 {toolsList === null || toolsList.length === 0 && loader !== true &&
                     <div style={{ textAlign: 'center', padding: 120 }}>
@@ -652,22 +712,22 @@ const Tools = () => {
                     </div>
                 }
 
-                <Pagination
-                    activePage={toolPage}
-                    boundaryRange={boundaryRange}
-                    onPageChange={(e, { activePage }) => setToolPage(activePage)}
-                    size='mini'
-                    siblingRange={siblingRange}
-                    totalPages={totalTools / 12}
-                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
-                    ellipsisItem={showEllipsis ? undefined : null}
-                    firstItem={showFirstAndLastNav ? undefined : null}
-                    lastItem={showFirstAndLastNav ? undefined : null}
-                    prevItem={showPreviousAndNextNav ? undefined : null}
-                    nextItem={showPreviousAndNextNav ? undefined : null}
-                    style={{ float: 'right', marginTop: 10 }}
-                />
             </div>
+            <Pagination
+                activePage={toolPage}
+                boundaryRange={boundaryRange}
+                onPageChange={(e, { activePage }) => setToolPage(activePage)}
+                size='mini'
+                siblingRange={siblingRange}
+                totalPages={totalTools / 12}
+                // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                ellipsisItem={showEllipsis ? undefined : null}
+                firstItem={showFirstAndLastNav ? undefined : null}
+                lastItem={showFirstAndLastNav ? undefined : null}
+                prevItem={showPreviousAndNextNav ? undefined : null}
+                nextItem={showPreviousAndNextNav ? undefined : null}
+                style={{ float: 'right', marginTop: 10 }}
+            />
 
             <Modal
                 size="mini"
