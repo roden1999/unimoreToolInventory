@@ -49,7 +49,7 @@ const Main = () => {
 
   return (
     <Grid style={{ width: '100%', }}>
-      <Grid.Column width={3} style={{ height: '100%', }}>
+      <Grid.Column width={2} style={{ height: '100%', }}>
         <Menu inverted fluid vertical size='massive' style={{ height: '100%', minHeight: '100vh', maxHeight: '100vh' }}>
 
           <Menu.Item>
@@ -89,7 +89,7 @@ const Main = () => {
             active={page === 'RECORDS'}
             onClick={() => handlePage("RECORDS")}
           >
-            <h4><Icon color='white' name='file alternate' /> Borrowed/Returned</h4>
+            <h4><Icon color='white' name='file alternate' /> Borrowed / Returned</h4>
           </Menu.Item>
 
           <Menu.Item
@@ -127,7 +127,7 @@ const Main = () => {
         </Menu>
       </Grid.Column>
 
-      <Grid.Column stretched width={13}>
+      <Grid.Column stretched width={14}>
         <Segment style={{ marginTop: 20, height: '100%', minHeight: '95vh', maxHeight: '95vh' }}>
           {page === "SPARE PARTS" && role !== "Tool Keeper" &&
             <MachineSpareParts />

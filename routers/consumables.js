@@ -68,7 +68,7 @@ router.put("/:id", async (request, response) => {
 router.post("/list", async (request, response) => {
 	try {
 		var page = request.body.page !== "" ? request.body.page : 0;
-        var perPage = 12;
+		var perPage = 12;
 		if (Object.keys(request.body.selectedConsumables).length > 0) {
 			var id = [];
 			var data = request.body.selectedConsumables;
@@ -83,6 +83,7 @@ router.post("/list", async (request, response) => {
 
 			var data = [];
 			for (const i in items) {
+				var critlvl = (items[i].Used * 100) / items[i].Quantity;
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
@@ -92,6 +93,8 @@ router.post("/list", async (request, response) => {
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
 					"Used": items[i].Used,
+					"CritLevelPercentage": critlvl,
+					"CritLevel": critlvl <= 40 ? true : false,
 				}
 				data.push(item);
 			}
@@ -100,6 +103,7 @@ router.post("/list", async (request, response) => {
 			const items = await consumableModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in items) {
+				var critlvl = (items[i].Used * 100) / items[i].Quantity;
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
@@ -109,6 +113,8 @@ router.post("/list", async (request, response) => {
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
 					"Used": items[i].Used,
+					"CritLevelPercentage": critlvl.toFixed(2),
+					"CritLevel": critlvl <= 40 ? true : false,
 				}
 				data.push(item);
 			}

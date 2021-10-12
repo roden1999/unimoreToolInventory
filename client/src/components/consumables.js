@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Form, Button, Card, Icon, Pagination } from 'semantic-ui-react'
+import { Modal, Form, Button, Card, Icon, Pagination, Table } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -100,6 +100,8 @@ const Consumables = () => {
             description: x.Description,
             quantity: x.Quantity,
             used: x.Used,
+            critLevelPercentage: x.CritLevelPercentage,
+            critLevel: x.CritLevel,
         }))
         : [];
 
@@ -391,7 +393,7 @@ const Consumables = () => {
             <Button size="large" style={{ float: 'left' }} onClick={() => setAddModal(true)}><Icon name='plus' />Add Item</Button>
 
             <div style={{
-                float: 'right', width: '30%', zIndex: 100,
+                float: 'right', width: '30%', zIndex: 100, marginBottom: 20
             }}>
                 <Select
                     defaultValue={selectedConsumables}
@@ -414,8 +416,51 @@ const Consumables = () => {
                 />
             </div>
 
-            <div style={{ paddingTop: 50, }}>
-                <Card.Group itemsPerRow={3} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
+            <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
+                <Table celled size='large'>
+                    <Table.Header style={{ position: "sticky", top: 0 }}>
+                        <Table.Row>
+                            <Table.HeaderCell rowSpan='2'>Name</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Brand</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Unit</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Stock</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Used</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Total Available</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Date Purchased</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Crit Level %</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Description</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    {consumablesList !== null && loader !== true && consumablesList.map(x =>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>{x.name}</Table.Cell>
+                                <Table.Cell>{x.brand ? x.brand : "No Brand"}</Table.Cell>
+                                <Table.Cell>{x.unit}</Table.Cell>
+                                <Table.Cell>{x.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Table.Cell>
+                                <Table.Cell>{x.used.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Table.Cell>
+                                <Table.Cell>{(x.quantity - x.used).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Table.Cell>
+                                <Table.Cell>{x.datePurchased ? moment(x.datePurchased).format("MM/DD/yyyy") : "No Date"}</Table.Cell>
+                                <Table.Cell negative={x.critLevel}>{x.critLevelPercentage + "%"}</Table.Cell>
+                                <Table.Cell>{x.description}</Table.Cell>
+                                <Table.Cell style={{ textAlign: 'center' }}>
+                                    <div className='ui two buttons'>
+                                        <Button basic color='grey' onClick={() => handleOpenEditModal(x)}>
+                                            Edit
+                                        </Button>
+                                        <Button basic color='grey' onClick={() => handleOpenDeletePopup(x.id)}>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                    )}
+                </Table>
+
+                {/* <Card.Group itemsPerRow={3} style={{ marginTop: 40, margin: '0 auto', width: '100%', backgroundColor: '#EEEEEE', overflowY: 'scroll', height: '100%', maxHeight: '80vh', }}>
                     {consumablesList !== null && loader !== true && consumablesList.map(x =>
                         <Card color='blue'>
                             <Card.Content>
@@ -450,7 +495,7 @@ const Consumables = () => {
                             </Card.Content>
                         </Card>
                     )}
-                </Card.Group>
+                </Card.Group> */}
 
                 {consumablesList === null || consumablesList.length === 0 && loader !== true &&
                     <div style={{ textAlign: 'center', padding: 120 }}>
@@ -463,22 +508,23 @@ const Consumables = () => {
                     </div>
                 }
 
-                <Pagination
-                    activePage={itemPage}
-                    boundaryRange={boundaryRange}
-                    onPageChange={(e, { activePage }) => setItemPage(activePage)}
-                    size='mini'
-                    siblingRange={siblingRange}
-                    totalPages={totalItem / 12}
-                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
-                    ellipsisItem={showEllipsis ? undefined : null}
-                    firstItem={showFirstAndLastNav ? undefined : null}
-                    lastItem={showFirstAndLastNav ? undefined : null}
-                    prevItem={showPreviousAndNextNav ? undefined : null}
-                    nextItem={showPreviousAndNextNav ? undefined : null}
-                    style={{ float: 'right', marginTop: 10 }}
-                />
             </div>
+
+            <Pagination
+                activePage={itemPage}
+                boundaryRange={boundaryRange}
+                onPageChange={(e, { activePage }) => setItemPage(activePage)}
+                size='mini'
+                siblingRange={siblingRange}
+                totalPages={totalItem / 12}
+                // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                ellipsisItem={showEllipsis ? undefined : null}
+                firstItem={showFirstAndLastNav ? undefined : null}
+                lastItem={showFirstAndLastNav ? undefined : null}
+                prevItem={showPreviousAndNextNav ? undefined : null}
+                nextItem={showPreviousAndNextNav ? undefined : null}
+                style={{ float: 'right', marginTop: 10 }}
+            />
 
             <Modal
                 size="mini"
