@@ -83,7 +83,7 @@ router.post("/list", async (request, response) => {
 
 			var data = [];
 			for (const i in items) {
-				var critlvl = (items[i].Used * 100) / items[i].Quantity;
+				var critlvl = ((items[i].Quantity - items[i].Used) * 100) / items[i].Quantity;
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
@@ -103,7 +103,7 @@ router.post("/list", async (request, response) => {
 			const items = await consumableModel.find({ IsDeleted: false }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in items) {
-				var critlvl = (items[i].Used * 100) / items[i].Quantity;
+				var critlvl = ((items[i].Quantity - items[i].Used) * 100) / items[i].Quantity;
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,

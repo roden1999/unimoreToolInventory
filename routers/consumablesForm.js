@@ -206,7 +206,7 @@ router.put("/subtract-quantity/:id", async (request, response) => {
 router.post("/list", verify, async (request, response) => {
     try {
         var page = request.body.page !== "" ? request.body.page : 0;
-		var perPage = 5;
+		var perPage = 20;
         if (Object.keys(request.body.selectedProject).length > 0) {
             var id = [];
             var data = request.body.selectedProject;
@@ -256,7 +256,7 @@ router.post("/list", verify, async (request, response) => {
             }
             response.status(200).json(data);
         } else {
-            const projects = await projectModel.find({ IsDeleted: false, FormType: "Consumables" }).skip((page) * perPage).limit(perPage).sort('-Date');
+            const projects = await projectModel.find({ IsDeleted: false, FormType: "Consumables" }).skip((page - 1) * perPage).limit(perPage).sort('-Date');
             var data = [];
             for (const i in projects) {
                 var consumableData = [];
