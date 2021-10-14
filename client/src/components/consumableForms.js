@@ -824,7 +824,7 @@ const ConsumableForms = () => {
                                     <div>
                                         <Button size='medium' style={{ float: 'right', marginBottom: 10 }} onClick={() => handleOpenItemModal(x.id)}><Icon name='plus' />Add Item</Button>
 
-                                        <div style={{ overflowY: 'scroll', width: "100%", height: '100%', minHeight: '60vh', maxHeight: '60vh' }}>
+                                        <div style={{ overflowY: 'scroll', width: "100%", height: '100%', maxHeight: '60vh' }}>
                                             <Table celled color="blue">
                                                 <Table.Header>
                                                     <Table.Row>
