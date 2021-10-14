@@ -731,7 +731,7 @@ const Projects = () => {
                                     <div>
                                         <Button size='medium' style={{ float: 'right', marginBottom: 10 }} onClick={() => handleBorrowTool(x.id)}><Icon name='plus' />Add Tool</Button>
 
-                                        <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
+                                        <div style={{ width: "100%", overflowY: 'scroll', height: '100%', minHeight: '60vh', maxHeight: '60vh' }}>
                                             <Table celled color="blue">
                                                 <Table.Header>
                                                     <Table.Row>
