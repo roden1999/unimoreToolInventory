@@ -57,10 +57,11 @@ router.post("/add-item", verify, async (request, response) => {
     const itemExist = await consumableFormModel.findOne({
         EmployeeId: request.body.employeeId,
         ConsumableId: request.body.consumableId,
+        DateIssued: { $gte: new Date(request.body.dateIssued).setHours(00, 00, 00), $lte: new Date(request.body.dateIssued).setHours(23, 59, 59) },
         ProjectId: request.body.project,
     });
     if (itemExist)
-        return response.status(400).send(`${itemExist.EmployeeId} already borrowed this item.`);
+        return response.status(400).send(`This employee already borrowed this item on this date ${moment(itemExist.DateIssued).format("MMM dd, yyyy")}.`);
     const item = await consumableModel.findById(request.body.consumableId);
     const options = { new: true };
 
