@@ -61,8 +61,8 @@ const Projects = () => {
     const [totalForm, setTotalForm] = useState(0);
     const [page, setPage] = useState(1);
 
-    const boundaryRange = 1;
-    const siblingRange = 1;
+    const boundaryRange = 0;
+    const siblingRange = 0;
     const showEllipsis = true;
     const showFirstAndLastNav = true;
     const showPreviousAndNextNav = true;
@@ -716,7 +716,7 @@ const Projects = () => {
                                     lastItem={showFirstAndLastNav ? undefined : null}
                                     prevItem={showPreviousAndNextNav ? undefined : null}
                                     nextItem={showPreviousAndNextNav ? undefined : null}
-                                    style={{  }}
+                                    style={{}}
                                 />
                             }
                         </Menu.Item>
@@ -731,47 +731,49 @@ const Projects = () => {
                                     <div>
                                         <Button size='medium' style={{ float: 'right', marginBottom: 10 }} onClick={() => handleBorrowTool(x.id)}><Icon name='plus' />Add Tool</Button>
 
-                                        <Table celled color="blue">
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    <Table.HeaderCell rowSpan='2'>Tool Name</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Serial No.</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Borrower</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Date Borrowed</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Returned</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Date Returned</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            {x.id === projId && x.borrowedTools.length !== 0 && x.borrowedTools.map(y =>
-                                                <Table.Body>
+                                        <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
+                                            <Table celled color="blue">
+                                                <Table.Header>
                                                     <Table.Row>
-                                                        <TableCell>{y.ToolName}</TableCell>
-                                                        <TableCell>{y.SerialNo}</TableCell>
-                                                        <TableCell>{y.EmployeeName}</TableCell>
-                                                        <TableCell>{moment(y.DateBorrowed).format("MMM DD, yyyy")}</TableCell>
-                                                        <TableCell style={{ textAlign: 'center' }}>{y.Status === "Returned" ? <Icon color='green' size='large' name='checkmark' /> : ""}</TableCell>
-                                                        <TableCell>{y.DateReturned ? moment(y.DateReturned).format("MMM DD, yyyy | HH:mm a") : ""}</TableCell>
-                                                        <TableCell style={{ textAlign: 'center' }}>
-                                                            <div className='ui one buttons'>
-                                                                {y.Status !== "Returned" ?
-                                                                    <Button.Group>
-                                                                        <Button basic color='grey' onClick={() => handleEditItem(y)}>
-                                                                            <Icon name='edit' />Edit
-                                                                        </Button>
-                                                                        <Button basic color='grey' onClick={() => handleOpenReturnModal(y._id)}>
-                                                                            <Icon name='reply' />Return
-                                                                        </Button>
-                                                                    </Button.Group>
-                                                                    :
-                                                                    ""
-                                                                }
-                                                            </div>
-                                                        </TableCell>
+                                                        <Table.HeaderCell rowSpan='2'>Tool Name</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Serial No.</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Borrower</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Date Borrowed</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Returned</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Date Returned</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
                                                     </Table.Row>
-                                                </Table.Body>
-                                            )}
-                                        </Table>
+                                                </Table.Header>
+                                                {x.id === projId && x.borrowedTools.length !== 0 && x.borrowedTools.map(y =>
+                                                    <Table.Body>
+                                                        <Table.Row>
+                                                            <TableCell>{y.ToolName}</TableCell>
+                                                            <TableCell>{y.SerialNo}</TableCell>
+                                                            <TableCell>{y.EmployeeName}</TableCell>
+                                                            <TableCell>{moment(y.DateBorrowed).format("MMM DD, yyyy")}</TableCell>
+                                                            <TableCell style={{ textAlign: 'center' }}>{y.Status === "Returned" ? <Icon color='green' size='large' name='checkmark' /> : ""}</TableCell>
+                                                            <TableCell>{y.DateReturned ? moment(y.DateReturned).format("MMM DD, yyyy | HH:mm a") : ""}</TableCell>
+                                                            <TableCell style={{ textAlign: 'center' }}>
+                                                                <div className='ui one buttons'>
+                                                                    {y.Status !== "Returned" ?
+                                                                        <Button.Group>
+                                                                            <Button basic color='grey' onClick={() => handleEditItem(y)}>
+                                                                                <Icon name='edit' />Edit
+                                                                            </Button>
+                                                                            <Button basic color='grey' onClick={() => handleOpenReturnModal(y._id)}>
+                                                                                <Icon name='reply' />Return
+                                                                            </Button>
+                                                                        </Button.Group>
+                                                                        :
+                                                                        ""
+                                                                    }
+                                                                </div>
+                                                            </TableCell>
+                                                        </Table.Row>
+                                                    </Table.Body>
+                                                )}
+                                            </Table>
+                                        </div>
                                     </div>
                                 }
 

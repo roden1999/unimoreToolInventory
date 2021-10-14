@@ -65,8 +65,8 @@ const ConsumableForms = () => {
     const [totalForm, setTotalForm] = useState(0);
     const [page, setPage] = useState(1);
 
-    const boundaryRange = 1;
-    const siblingRange = 1;
+    const boundaryRange = 0;
+    const siblingRange = 0;
     const showEllipsis = true;
     const showFirstAndLastNav = true;
     const showPreviousAndNextNav = true;
@@ -809,7 +809,7 @@ const ConsumableForms = () => {
                                     lastItem={showFirstAndLastNav ? undefined : null}
                                     prevItem={showPreviousAndNextNav ? undefined : null}
                                     nextItem={showPreviousAndNextNav ? undefined : null}
-                                    style={{}}
+                                    style={{ zIndex: 1 }}
                                 />
                             }
                         </Menu.Item>
@@ -824,49 +824,51 @@ const ConsumableForms = () => {
                                     <div>
                                         <Button size='medium' style={{ float: 'right', marginBottom: 10 }} onClick={() => handleOpenItemModal(x.id)}><Icon name='plus' />Add Item</Button>
 
-                                        <Table celled>
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    <Table.HeaderCell rowSpan='2'>Item</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Quantity</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Borrower</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Issued By</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2'>Date Issued</Table.HeaderCell>
-                                                    <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            {x.data.length !== 0 && x.data.map(y =>
-                                                <Table.Body>
+                                        <div style={{ overflowY: 'scroll', width: "100%", height: '100%', minHeight: '60vh', maxHeight: '60vh' }}>
+                                            <Table celled color="blue">
+                                                <Table.Header>
                                                     <Table.Row>
-                                                        <TableCell>{y.Consumable}</TableCell>
-                                                        <TableCell style={{ textAlign: 'center' }}>
-                                                            <Button icon='minus' onClick={() => handleOpenSubtractQtyModal(y._id)} />
-                                                            <Button basic>
-                                                                {y.Quantity}
-                                                            </Button>
-                                                            <Button icon="plus" onClick={() => handleOpenAddQtyModal(y._id)} />
-                                                        </TableCell>
-                                                        <TableCell>{y.EmployeeName}</TableCell>
-                                                        <TableCell>{y.IssuedBy}</TableCell>
-                                                        <TableCell>{moment(y.DateIssued).format("MMM DD, yyyy")}</TableCell>
-                                                        <TableCell style={{ textAlign: 'center' }}>
-                                                            <div className='ui one buttons'>
-                                                                {
-                                                                    <Button.Group>
-                                                                        <Button basic color='grey' onClick={() => handleEditItem(y)}>
-                                                                            <Icon name='edit' />Edit
-                                                                        </Button>
-                                                                        <Button basic color='grey' onClick={() => handleDeleteItemModal(y._id)}>
-                                                                            <Icon name='close' />Delete
-                                                                        </Button>
-                                                                    </Button.Group>
-                                                                }
-                                                            </div>
-                                                        </TableCell>
+                                                        <Table.HeaderCell rowSpan='2'>Item</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Quantity</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Borrower</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Issued By</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Date Issued</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
                                                     </Table.Row>
-                                                </Table.Body>
-                                            )}
-                                        </Table>
+                                                </Table.Header>
+                                                {x.data.length !== 0 && x.data.map(y =>
+                                                    <Table.Body>
+                                                        <Table.Row>
+                                                            <TableCell>{y.Consumable}</TableCell>
+                                                            <TableCell style={{ textAlign: 'center' }}>
+                                                                <Button icon='minus' onClick={() => handleOpenSubtractQtyModal(y._id)} />
+                                                                <Button basic>
+                                                                    {y.Quantity}
+                                                                </Button>
+                                                                <Button icon="plus" onClick={() => handleOpenAddQtyModal(y._id)} />
+                                                            </TableCell>
+                                                            <TableCell>{y.EmployeeName}</TableCell>
+                                                            <TableCell>{y.IssuedBy}</TableCell>
+                                                            <TableCell>{moment(y.DateIssued).format("MMM DD, yyyy")}</TableCell>
+                                                            <TableCell style={{ textAlign: 'center' }}>
+                                                                <div className='ui one buttons'>
+                                                                    {
+                                                                        <Button.Group>
+                                                                            <Button basic color='grey' onClick={() => handleEditItem(y)}>
+                                                                                <Icon name='edit' />Edit
+                                                                            </Button>
+                                                                            <Button basic color='grey' onClick={() => handleDeleteItemModal(y._id)}>
+                                                                                <Icon name='close' />Delete
+                                                                            </Button>
+                                                                        </Button.Group>
+                                                                    }
+                                                                </div>
+                                                            </TableCell>
+                                                        </Table.Row>
+                                                    </Table.Body>
+                                                )}
+                                            </Table>
+                                        </div>
                                     </div>
                                 }
 
