@@ -35,7 +35,8 @@ router.post("/", verify, async (request, response) => {
 		DateReturned: request.body.dateReturned,
 		Status: request.body.status,
 		ProcessedBy: request.body.processedBy,
-		ReceivedBy: request.body.receivedBy
+		ReceivedBy: request.body.receivedBy,
+		Remarks: request.body.remarks,
 	});
 	try {
 		const record = await newRecord.save();
@@ -127,6 +128,7 @@ router.post("/list-borrowed", async (request, response) => {
 					"DateBorrowed": records[i].DateBorrowed,
 					"Project": !project ? "" : project[0].ProjectName,
 					"ProcessedBy": project[i].ProcessedBy,
+					"Remarks": records[i].Remarks,
 					"Status": records[i].Status,
 				}
 				data.push(recordData);
@@ -151,6 +153,7 @@ router.post("/list-borrowed", async (request, response) => {
 					"DateBorrowed": records[i].DateBorrowed,
 					"Project": !project ? "" : project[0].ProjectName,
 					"ProcessedBy": records[i].ProcessedBy,
+					"Remarks": records[i].Remarks,
 					"Status": records[i].Status,
 				}
 				data.push(recordData);
@@ -195,6 +198,7 @@ router.post("/list-returned", async (request, response) => {
 					"DateReturned": records[i].DateReturned,
 					"ProcessedBy": records[i].ProcessedBy,
 					"ReceivedBy": records[i].ReceivedBy,
+					"Remarks": records[i].Remarks,
 					"Status": records[i].Status,
 				}
 				data.push(recordData);
@@ -217,6 +221,7 @@ router.post("/list-returned", async (request, response) => {
 					"DateReturned": records[i].DateReturned,
 					"ProcessedBy": records[i].ProcessedBy,
 					"ReceivedBy": records[i].ReceivedBy,
+					"Remarks": records[i].Remarks,
 					"Status": records[i].Status,
 				}
 				data.push(recordData);

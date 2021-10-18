@@ -9,59 +9,59 @@ const moment = require("moment");
 
 const customMultiSelectStyle = {
     clearIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: '#383f48',
+        ...ci
+        // backgroundColor: '#383f48',
     }),
     dropdownIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: "#383f48"
+        ...ci
+        // backgroundColor: "#383f48"
     }),
     indicatorsContainer: (ci) => ({
-      ...ci,
-      color: "red",
-      // backgroundColor: "#383f48",
-      position: "sticky",
-      top: 0,
-      height: "40px",
-      zIndex: "100"
+        ...ci,
+        color: "red",
+        // backgroundColor: "#383f48",
+        position: "sticky",
+        top: 0,
+        height: "40px",
+        zIndex: "100"
     }),
     control: (base) => ({
-      ...base,
-      height: 40,
-      minHeight: 40,
-      overflowX: "hidden",
-      overflowY: "auto",
-      borderRadiusTopRight: 0,
-      borderRadiusBottomRight: 0,
-      width: "100%"
-      // backgroundColor: '#383f48',
+        ...base,
+        height: 40,
+        minHeight: 40,
+        overflowX: "hidden",
+        overflowY: "auto",
+        borderRadiusTopRight: 0,
+        borderRadiusBottomRight: 0,
+        width: "100%"
+        // backgroundColor: '#383f48',
     }),
     option: (provided, state) => ({
-      ...provided,
-      color: state.isSelected ? 'white' : 'black',
-      padding: 20,
-      zIndex: 1000
+        ...provided,
+        color: state.isSelected ? 'white' : 'black',
+        padding: 20,
+        zIndex: 1000
     }),
     singleValue: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     multiValue: (styles, { data }) => {
-      return {
-        ...styles,
-        backgroundColor: "#1E8EFF",
-      };
+        return {
+            ...styles,
+            backgroundColor: "#1E8EFF",
+        };
     },
     multiValueLabel: (styles, { data }) => ({
-      ...styles,
-      color: "#00000",
+        ...styles,
+        color: "#00000",
     }),
     input: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     menu: (provided) => ({ ...provided, zIndex: 9999 }),
-  };
+};
 
 const customSelectStyle = {
     control: base => ({
@@ -105,6 +105,7 @@ const Records = () => {
     const [project, setProject] = useState([]);
     const [dateReturned, setDateReturned] = useState("");
     const [status, setStatus] = useState("");
+    const [remarks, setRemarks] = useState("");
     const [processedBy, setProcessedBy] = useState("");
     const [receivedBy, setReceivedBy] = useState("");
     const [addModal, setAddModal] = useState(false);
@@ -126,7 +127,7 @@ const Records = () => {
     useEffect(() => {
         var data = {
             searchTool: !searchTool ? [] : searchTool,
-            page: returnedPage
+            page: borrowedPage
         };
         var route = "records/list-borrowed";
         var url = window.apihost + route;
@@ -156,7 +157,7 @@ const Records = () => {
             .finally(function () {
                 // always executed
             });
-    }, [selectedRecord, searchTool, loader]);
+    }, [selectedRecord, searchTool, borrowedPage, loader]);
 
     const recordsList = recordData
         ? recordData.map((x) => ({
@@ -168,7 +169,8 @@ const Records = () => {
             dateBorrowed: x.DateBorrowed,
             project: x.Project,
             processedBy: x.ProcessedBy,
-            status: x.Status
+            status: x.Status,
+            remarks: x.Remarks
         }))
         : [];
 
@@ -243,7 +245,7 @@ const Records = () => {
             .finally(function () {
                 // always executed
             });
-    }, [selectedRecord, searchTool, loader]);
+    }, [selectedRecord, searchTool, returnedPage, loader]);
 
     const returnedRecordsList = returnedRecordData
         ? returnedRecordData.map((x) => ({
@@ -257,7 +259,8 @@ const Records = () => {
             dateReturned: x.DateReturned,
             processedBy: x.ProcessedBy,
             receivedBy: x.ReceivedBy,
-            status: x.Status
+            status: x.Status,
+            remarks: x.Remarks
         }))
         : [];
 
@@ -470,7 +473,8 @@ const Records = () => {
             dateReturned: "",
             status: "Borrowed",
             processedBy: processedBy,
-            receivedBy: ""
+            receivedBy: "",
+            remarks: remarks
         }
 
         setLoader(true);
@@ -497,6 +501,7 @@ const Records = () => {
                 setStatus("");
                 // setProcessedBy("");
                 setReceivedBy("");
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -521,6 +526,7 @@ const Records = () => {
         setStatus("");
         // setProcessedBy("");
         setReceivedBy("");
+        setRemarks("");
     }
 
     const handleEditTools = () => {
@@ -536,7 +542,8 @@ const Records = () => {
             dateReturned: "",
             status: "Borrowed",
             processedBy: "",
-            receivedBy: ""
+            receivedBy: "",
+            remarks: remarks
         }
 
         setLoader(true);
@@ -563,6 +570,7 @@ const Records = () => {
                 setStatus("");
                 setProcessedBy("");
                 setReceivedBy("");
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -587,6 +595,7 @@ const Records = () => {
         setStatus(params.status);
         setProcessedBy(params.processedBy);
         setReceivedBy(params.receivedBy);
+        setRemarks(params.remarks);
     }
 
     const handleCloseEditModal = () => {
@@ -600,6 +609,7 @@ const Records = () => {
         setStatus("");
         // setProcessedBy("");
         setReceivedBy("");
+        setRemarks("");
     }
 
     const handleDeleteEmployee = () => {
@@ -660,11 +670,13 @@ const Records = () => {
         setStatus("");
         // setProcessedBy("");
         setReceivedBy("");
+        setRemarks("");
     }
 
     const handleOpenReturnModal = (params) => {
         setReturnModal(true);
-        setId(params);
+        setId(params.id);
+        setRemarks(params.remarks);
     }
 
     const handleCloseReturnModal = () => {
@@ -686,7 +698,8 @@ const Records = () => {
             DateReturned: moment(),
             Status: "Returned",
             // processedBy: "",
-            ReceivedBy: processedBy
+            ReceivedBy: processedBy,
+            Remarks: remarks
         }
 
         setLoader(true);
@@ -707,6 +720,7 @@ const Records = () => {
                 setId(-1);
                 setEmployeeId("");
                 setDateBorrowed(moment());
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -749,9 +763,9 @@ const Records = () => {
 
             <div style={{ paddingTop: 50, }}>
                 <h3 style={{ textAlign: 'center' }}><Label color="grey"><h4>Borrowed</h4></Label></h3>
-                <div style={{ overflowY: 'auto', width: '100%', height: '100%', minHeight: '35vh', maxHeight: '35vh', backgroundColor: '#EEEEEE', }}>
-                    <Table celled>
-                        <Table.Header>
+                <div style={{ overflowY: 'auto', width: '100%', height: '100%', minHeight: '30vh', maxHeight: '30vh', backgroundColor: '#EEEEEE', }}>
+                    <Table celled color="blue">
+                        <Table.Header style={{ position: 'sticky', top: 0, zIndex: 2 }}>
                             <Table.Row>
                                 <Table.HeaderCell rowSpan='2'>Tool Name</Table.HeaderCell>
                                 <Table.HeaderCell rowSpan='2'>Tool SN.</Table.HeaderCell>
@@ -760,6 +774,7 @@ const Records = () => {
                                 <Table.HeaderCell rowSpan='2'>Project</Table.HeaderCell>
                                 <Table.HeaderCell rowSpan='2'>Processed By</Table.HeaderCell>
                                 <Table.HeaderCell rowSpan='2'>Status</Table.HeaderCell>
+                                <Table.HeaderCell rowSpan='2'>Remarks</Table.HeaderCell>
                                 <Table.HeaderCell rowSpan='2'>Actions</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
@@ -778,10 +793,11 @@ const Records = () => {
                                             <Icon color='white' name='checkmark' size='large' />{x.status}
                                         </Label>
                                     </Table.Cell>
+                                    <Table.Cell>{x.remarks}</Table.Cell>
                                     <Table.Cell textAlign='center'>
                                         <Button.Group>
                                             <Button basic color="grey" onClick={() => handleOpenDeletePopup(x.id)}><Icon color='white' name='delete' />Delete</Button>
-                                            <Button basic color="grey" onClick={() => handleOpenReturnModal(x.id)}><Icon color='white' name='reply' />Return</Button>
+                                            <Button basic color="grey" onClick={() => handleOpenReturnModal(x)}><Icon color='white' name='reply' />Return</Button>
                                         </Button.Group>
                                     </Table.Cell>
                                 </Table.Row>
@@ -818,8 +834,8 @@ const Records = () => {
 
             <div style={{ paddingTop: 50, }}>
                 <h3 style={{ textAlign: 'center' }}><Label color="grey"><h4>Returned</h4></Label></h3>
-                <div style={{ overflowY: 'auto', width: '100%', height: '100%', minHeight: '35vh', maxHeight: '35vh', backgroundColor: '#EEEEEE', }}>
-                    <Table celled role="grid" aria-labelledby="header">
+                <div style={{ overflowY: 'auto', width: '100%', height: '100%', minHeight: '30vh', maxHeight: '30vh', backgroundColor: '#EEEEEE', }}>
+                    <Table celled role="grid" aria-labelledby="header" color="green">
                         <Table.Header style={{ position: 'sticky', top: 0, zIndex: 2 }}>
                             <Table.Row>
                                 <Table.HeaderCell rowSpan='2'>Tool Name</Table.HeaderCell>
@@ -830,6 +846,7 @@ const Records = () => {
                                 <Table.HeaderCell rowSpan='2'>Date Returned</Table.HeaderCell>
                                 <Table.HeaderCell rowSpan='2'>Received By</Table.HeaderCell>
                                 <Table.HeaderCell rowSpan='2'>Status</Table.HeaderCell>
+                                <Table.HeaderCell rowSpan='2'>Remarks</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
 
@@ -848,6 +865,7 @@ const Records = () => {
                                             <Icon color='white' name='checkmark' size='large' />{x.status}
                                         </Label>
                                     </Table.Cell>
+                                    <Table.Cell>{x.remarks}</Table.Cell>
                                 </Table.Row>
                             )}
                         </Table.Body>
@@ -968,6 +986,19 @@ const Records = () => {
                         />
 
                         <br />
+
+                        <label><b>Remarks</b></label>
+                        <input
+                            fluid
+                            label='Remarks'
+                            placeholder='remarks'
+                            id='form-input-date-borrowed'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
+                        />
+
+                        <br />
                         <br />
 
                         <label><b>Processed By:</b> {processedBy}</label>
@@ -1023,6 +1054,16 @@ const Records = () => {
                             onChange={e => setDateBorrowed(e.target.value)}
                         />
 
+                        <Form.Input
+                            fluid
+                            label='Remarks'
+                            placeholder='Remarks'
+                            id='form-input-date-borrowed'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
+                        />
+
                         <br />
 
                         <label><b>Processed By:</b> {processedBy}</label>
@@ -1065,6 +1106,19 @@ const Records = () => {
                 <Modal.Header>Return Tool</Modal.Header>
 
                 <Modal.Content>Are you sure you want to Return this tool?</Modal.Content>
+
+                <Modal.Content>
+                    <label><b>Remarks</b></label>
+                    <input
+                        fluid
+                        label='Remarks'
+                        placeholder='remarks'
+                        id='form-input-date-borrowed'
+                        size='medium'
+                        value={remarks}
+                        onChange={e => setRemarks(e.target.value)}
+                    />
+                </Modal.Content>
 
                 <Modal.Actions>
                     <Button onClick={handleCloseReturnModal}>

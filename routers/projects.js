@@ -28,6 +28,7 @@ router.post("/", async (request, response) => {
         Description: request.body.description,
         Date: request.body.date,
         FormType: "Tools",
+        Status: request.body.status,
         IsDeleted: false,
     });
     try {
@@ -94,6 +95,7 @@ router.post("/list", verify, async (request, response) => {
                         "Project": records[i].ProjectId,
                         "DateReturned": records[i].DateReturned,
                         "ProcessedBy": records[i].ProcessedBy,
+                        "Remarks": records[i].Remarks,
                         "Status": records[i].Status,
                     }
                     borrowedTools.push(recordData);
@@ -105,6 +107,7 @@ router.post("/list", verify, async (request, response) => {
                     "Description": projects[i].Description,
                     "Date": projects[i].Date,
                     "FormType": projects[i].FormType,
+                    "Status": projects[i].Status,
                     "IsDeleted": projects[i].IsDeleted,
 
                     "BorrowedTools": borrowedTools
@@ -134,6 +137,7 @@ router.post("/list", verify, async (request, response) => {
                         "Project": records[i].ProjectId,
                         "DateReturned": records[i].DateReturned,
                         "ProcessedBy": records[i].ProcessedBy,
+                        "Remarks": records[i].Remarks,
                         "Status": records[i].Status,
                     }
                     borrowedTools.push(recordData);
@@ -145,6 +149,7 @@ router.post("/list", verify, async (request, response) => {
                     "Description": projects[i].Description,
                     "Date": projects[i].Date,
                     "FormType": projects[i].FormType,
+                    "Status": projects[i].Status,
                     "IsDeleted": projects[i].IsDeleted,
 
                     "BorrowedTools": borrowedTools

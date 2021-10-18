@@ -28,5 +28,8 @@ const recordSchema = new mongoose.Schema({
     ReceivedBy: {
         type: String,
     },
+    Remarks: {
+        type: String,
+    }
 });
 module.exports = mongoose.model("record", recordSchema);

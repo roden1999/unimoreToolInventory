@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Form, Button, Card, Icon, Table, TableCell, Pagination, Menu, Grid, List, Segment } from 'semantic-ui-react'
+import { Modal, Form, Button, Card, Icon, Table, TableCell, Pagination, Menu, Grid, List, Segment, Label } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,59 +9,59 @@ const moment = require("moment");
 
 const customMultiSelectStyle = {
     clearIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: '#383f48',
+        ...ci
+        // backgroundColor: '#383f48',
     }),
     dropdownIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: "#383f48"
+        ...ci
+        // backgroundColor: "#383f48"
     }),
     indicatorsContainer: (ci) => ({
-      ...ci,
-      color: "red",
-      // backgroundColor: "#383f48",
-      position: "sticky",
-      top: 0,
-      height: "40px",
-      zIndex: "100"
+        ...ci,
+        color: "red",
+        // backgroundColor: "#383f48",
+        position: "sticky",
+        top: 0,
+        height: "40px",
+        zIndex: "100"
     }),
     control: (base) => ({
-      ...base,
-      height: 40,
-      minHeight: 40,
-      overflowX: "hidden",
-      overflowY: "auto",
-      borderRadiusTopRight: 0,
-      borderRadiusBottomRight: 0,
-      width: "100%"
-      // backgroundColor: '#383f48',
+        ...base,
+        height: 40,
+        minHeight: 40,
+        overflowX: "hidden",
+        overflowY: "auto",
+        borderRadiusTopRight: 0,
+        borderRadiusBottomRight: 0,
+        width: "100%"
+        // backgroundColor: '#383f48',
     }),
     option: (provided, state) => ({
-      ...provided,
-      color: state.isSelected ? 'white' : 'black',
-      padding: 20,
-      zIndex: 1000
+        ...provided,
+        color: state.isSelected ? 'white' : 'black',
+        padding: 20,
+        zIndex: 1000
     }),
     singleValue: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     multiValue: (styles, { data }) => {
-      return {
-        ...styles,
-        backgroundColor: "#1E8EFF",
-      };
+        return {
+            ...styles,
+            backgroundColor: "#1E8EFF",
+        };
     },
     multiValueLabel: (styles, { data }) => ({
-      ...styles,
-      color: "#00000",
+        ...styles,
+        color: "#00000",
     }),
     input: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     menu: (provided) => ({ ...provided, zIndex: 9999 }),
-  };
+};
 
 const customSelectStyle = {
     control: base => ({
@@ -97,6 +97,7 @@ const Projects = () => {
     const [id, setId] = useState(-1);
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
+    const [status, setStatus] = useState([]);
     const [date, setDate] = useState(moment());
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
@@ -111,6 +112,7 @@ const Projects = () => {
     const [project, setProject] = useState("");
     const [dateBorrowed, setDateBorrowed] = useState(moment());
     const [processedBy, setProcessedBy] = useState("");
+    const [remarks, setRemarks] = useState("");
     const [editItem, setEditItem] = useState(false);
     const [itemId, setItemId] = useState(-1);
     const [projId, setProjId] = useState("");
@@ -163,6 +165,7 @@ const Projects = () => {
             id: x._id,
             projectName: x.ProjectName,
             description: x.Description,
+            status: x.Status,
             date: x.Date,
             borrowedTools: x.BorrowedTools
         }))
@@ -342,6 +345,7 @@ const Projects = () => {
             projectName: projectName,
             description: description,
             date: date,
+            status: status ? status.value : "",
         }
 
         setLoader(true);
@@ -363,6 +367,7 @@ const Projects = () => {
                 setProjectName("");
                 setDescription("");
                 setDate(moment());
+                setStatus([]);
             })
             .catch(function (error) {
                 // handle error
@@ -393,7 +398,8 @@ const Projects = () => {
             // id: id,
             ProjectName: projectName,
             Description: description,
-            Date: date
+            Date: date,
+            Status: status ? status.value : "",
         }
 
         setLoader(true);
@@ -415,6 +421,7 @@ const Projects = () => {
                 setProjectName("");
                 setDescription("");
                 setDate(moment());
+                setStatus([]);
             })
             .catch(function (error) {
                 // handle error
@@ -429,11 +436,13 @@ const Projects = () => {
     }
 
     const handleOpenEditModal = (params) => {
+        var stat = [{ label: params.status, value: params.status }]
         setEditModal(true);
         setId(params.id);
         setProjectName(params.projectName);
         setDescription(params.description);
         setDate(moment(params.date));
+        setStatus(stat)
     }
 
     const handleCloseEditModal = () => {
@@ -441,6 +450,7 @@ const Projects = () => {
         setId(-1);
         setProjectName("");
         setDescription("");
+        setStatus([]);
     }
 
     const handleDeleteItem = () => {
@@ -495,6 +505,7 @@ const Projects = () => {
         setProjectName("");
         setDescription("");
         setDate(moment());
+        setStatus([])
     }
 
     const handleCloseBorrowModal = () => {
@@ -518,7 +529,8 @@ const Projects = () => {
             dateReturned: "",
             status: "Borrowed",
             processedBy: processedBy,
-            receivedBy: ""
+            receivedBy: "",
+            remarks: remarks
         }
 
         setLoader(true);
@@ -539,6 +551,7 @@ const Projects = () => {
                 setToolId("");
                 setEmployeeId("");
                 setDateBorrowed(moment());
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -559,13 +572,15 @@ const Projects = () => {
 
     const handleOpenReturnModal = (params) => {
         setReturnModal(true);
-        setRecordId(params);
+        setRecordId(params._id);
+        setRemarks(params.Remarks)
     }
 
     const handleCloseReturnModal = () => {
         setReturnModal(false);
         setEmployeeId("");
         setDateBorrowed(moment());
+        setRemarks("");
     }
 
     const handleReturnTools = () => {
@@ -581,7 +596,8 @@ const Projects = () => {
             DateReturned: moment(),
             Status: "Returned",
             // processedBy: "",
-            ReceivedBy: processedBy
+            ReceivedBy: processedBy,
+            Remarks: remarks
         }
 
         setLoader(true);
@@ -603,6 +619,7 @@ const Projects = () => {
                 setRecordId(-1);
                 setEmployeeId("");
                 setDateBorrowed(moment());
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -622,6 +639,7 @@ const Projects = () => {
         setToolId(tool);
         setEmployeeId(borrower);
         setDateBorrowed(moment(params.DateBorrowed));
+        setRemarks(params.remarks)
     }
 
     const handleCancelEditItem = () => {
@@ -630,6 +648,7 @@ const Projects = () => {
         setToolId("");
         setEmployeeId("");
         setDateBorrowed(moment());
+        setRemarks("");
     }
 
     const handleSubmitEditItem = () => {
@@ -641,6 +660,7 @@ const Projects = () => {
             ToolId: toolId ? toolId.value : "",
             EmployeeId: employeeId ? employeeId.value : "",
             DateBorrowed: dateBorrowed,
+            Remarks: remarks
         }
 
         setLoader(true);
@@ -673,6 +693,14 @@ const Projects = () => {
             .finally(function () {
                 // always executed
             });
+    }
+
+    function StatusOption() {
+        var list = [
+            { value: "On Going", label: "On Going" },
+            { value: "Finished", label: "Finished" },
+        ];
+        return list;
     }
 
 
@@ -731,6 +759,12 @@ const Projects = () => {
                                                         <List.Header>{x.projectName}</List.Header>
                                                         <List.Description>{moment(x.date).format("MMMM DD, yyyy")}</List.Description>
                                                         <List.Description>{x.description}</List.Description>
+                                                        <List.Description>
+                                                            {x.status !== "" ?
+                                                                <Label color={x.status !== "On Going" ? "green" : "blue"}>{x.status}</Label> :
+                                                                ""
+                                                            }
+                                                        </List.Description>
                                                     </List.Content>
                                                 </List.Item>
                                             </List>
@@ -797,6 +831,7 @@ const Projects = () => {
                                                         <Table.HeaderCell rowSpan='2'>Date Borrowed</Table.HeaderCell>
                                                         <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Returned</Table.HeaderCell>
                                                         <Table.HeaderCell rowSpan='2'>Date Returned</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Remarks</Table.HeaderCell>
                                                         <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
                                                     </Table.Row>
                                                 </Table.Header>
@@ -808,7 +843,8 @@ const Projects = () => {
                                                             <TableCell>{y.EmployeeName}</TableCell>
                                                             <TableCell>{moment(y.DateBorrowed).format("MMM DD, yyyy")}</TableCell>
                                                             <TableCell style={{ textAlign: 'center' }}>{y.Status === "Returned" ? <Icon color='green' size='large' name='checkmark' /> : ""}</TableCell>
-                                                            <TableCell>{y.DateReturned ? moment(y.DateReturned).format("MMM DD, yyyy | HH:mm a") : ""}</TableCell>
+                                                            <TableCell>{y.DateReturned ? moment(y.DateReturned).format("MM/DD/yyyy | h:mm a") : ""}</TableCell>
+                                                            <TableCell>{y.Remarks}</TableCell>
                                                             <TableCell style={{ textAlign: 'center' }}>
                                                                 <div className='ui one buttons'>
                                                                     {y.Status !== "Returned" ?
@@ -816,7 +852,7 @@ const Projects = () => {
                                                                             <Button basic color='grey' onClick={() => handleEditItem(y)}>
                                                                                 <Icon name='edit' />Edit
                                                                             </Button>
-                                                                            <Button basic color='grey' onClick={() => handleOpenReturnModal(y._id)}>
+                                                                            <Button basic color='grey' onClick={() => handleOpenReturnModal(y)}>
                                                                                 <Icon name='reply' />Return
                                                                             </Button>
                                                                         </Button.Group>
@@ -984,6 +1020,28 @@ const Projects = () => {
                             value={moment(date).format("yyyy-MM-DD")}
                             onChange={e => setDate(e.target.value)}
                         />
+
+                        <br />
+
+                        <label><strong>Status</strong></label>
+                        <Select
+                            defaultValue={status}
+                            options={StatusOption()}
+                            onChange={e => setStatus(e)}
+                            placeholder='Status...'
+                            isClearable
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
@@ -1035,6 +1093,28 @@ const Projects = () => {
                             type='date'
                             value={moment(date).format("yyyy-MM-DD")}
                             onChange={e => setDate(e.target.value)}
+                        />
+
+                        <br />
+
+                        <label><strong>Status</strong></label>
+                        <Select
+                            defaultValue={status}
+                            options={StatusOption()}
+                            onChange={e => setStatus(e)}
+                            placeholder='Status...'
+                            isClearable
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
                         />
                     </Form>
                 </Modal.Content>
@@ -1110,6 +1190,18 @@ const Projects = () => {
                             value={moment(dateBorrowed).format("yyyy-MM-DD")}
                             onChange={e => setDateBorrowed(e.target.value)}
                         />
+                        <br />
+                        <br />
+
+                        <Form.Input
+                            fluid
+                            label='Remarks'
+                            placeholder='remarks'
+                            id='form-input-remarks'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
+                        />
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
@@ -1149,6 +1241,20 @@ const Projects = () => {
                 <Modal.Header>Return Tool</Modal.Header>
 
                 <Modal.Content>Are you sure you want to Return this tool?</Modal.Content>
+
+                <Modal.Content>
+                    <Form>
+                        <Form.Input
+                            fluid
+                            label='Remarks'
+                            placeholder='remarks'
+                            id='form-input-remarks'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
+                        />
+                    </Form>
+                </Modal.Content>
 
                 <Modal.Actions>
                     <Button onClick={handleCloseReturnModal}>
@@ -1223,6 +1329,16 @@ const Projects = () => {
                             type='date'
                             value={moment(dateBorrowed).format("yyyy-MM-DD")}
                             onChange={e => setDateBorrowed(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Remarks'
+                            placeholder='remarks'
+                            id='form-input-remarks'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
                         />
 
                         <br />

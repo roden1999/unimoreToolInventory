@@ -17,6 +17,10 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    Status: {
+        type: String,
+        required: true
+    },
 	IsDeleted: {
 		type: Boolean,
         required: true,

@@ -192,6 +192,7 @@ const recordAddValidation = (data) => {
 		dateReturned: Joi.string().allow(''),
 		processedBy: Joi.string().allow(''),
 		receivedBy: Joi.string().allow(''),
+		remarks: Joi.string().allow(''),
 	});
 	return schema.validate(data, { abortEarly: false });
 };
@@ -232,6 +233,9 @@ const projectValidation = (data) => {
 		date: Joi.string().required().messages({
 			"string.empty": "Date is required"
 		}),
+		status: Joi.string().required().messages({
+			"string.empty": "Date is required"
+		}),
 	});
 	return schema.validate(data, { abortEarly: false });
 };
@@ -244,6 +248,9 @@ const projectEditValidation = (data) => {
 		}),
 		Description: Joi.string().allow(''),
 		Date: Joi.string().required().messages({
+			"string.empty": "Date is required"
+		}),
+		Status: Joi.string().required().messages({
 			"string.empty": "Date is required"
 		}),
 	});
