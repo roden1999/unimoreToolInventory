@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Form, Button, Card, Icon, Table, TableCell, Pagination, List, Grid, Menu, Segment } from 'semantic-ui-react'
+import { Modal, Form, Button, Card, Icon, Table, TableCell, Pagination, List, Grid, Menu, Segment, Label } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,59 +9,59 @@ const moment = require("moment");
 
 const customMultiSelectStyle = {
     clearIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: '#383f48',
+        ...ci
+        // backgroundColor: '#383f48',
     }),
     dropdownIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: "#383f48"
+        ...ci
+        // backgroundColor: "#383f48"
     }),
     indicatorsContainer: (ci) => ({
-      ...ci,
-      color: "red",
-      // backgroundColor: "#383f48",
-      position: "sticky",
-      top: 0,
-      height: "40px",
-      zIndex: "100"
+        ...ci,
+        color: "red",
+        // backgroundColor: "#383f48",
+        position: "sticky",
+        top: 0,
+        height: "40px",
+        zIndex: "100"
     }),
     control: (base) => ({
-      ...base,
-      height: 40,
-      minHeight: 40,
-      overflowX: "hidden",
-      overflowY: "auto",
-      borderRadiusTopRight: 0,
-      borderRadiusBottomRight: 0,
-      width: "100%"
-      // backgroundColor: '#383f48',
+        ...base,
+        height: 40,
+        minHeight: 40,
+        overflowX: "hidden",
+        overflowY: "auto",
+        borderRadiusTopRight: 0,
+        borderRadiusBottomRight: 0,
+        width: "100%"
+        // backgroundColor: '#383f48',
     }),
     option: (provided, state) => ({
-      ...provided,
-      color: state.isSelected ? 'white' : 'black',
-      padding: 20,
-      zIndex: 1000
+        ...provided,
+        color: state.isSelected ? 'white' : 'black',
+        padding: 20,
+        zIndex: 1000
     }),
     singleValue: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     multiValue: (styles, { data }) => {
-      return {
-        ...styles,
-        backgroundColor: "#1E8EFF",
-      };
+        return {
+            ...styles,
+            backgroundColor: "#1E8EFF",
+        };
     },
     multiValueLabel: (styles, { data }) => ({
-      ...styles,
-      color: "#00000",
+        ...styles,
+        color: "#00000",
     }),
     input: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     menu: (provided) => ({ ...provided, zIndex: 9999 }),
-  };
+};
 
 const customSelectStyle = {
     control: base => ({
@@ -97,6 +97,7 @@ const ConsumableForms = () => {
     const [id, setId] = useState(-1);
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
+    const [status, setStatus] = useState([]);
     const [date, setDate] = useState(moment());
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
@@ -168,6 +169,7 @@ const ConsumableForms = () => {
             projectName: x.ProjectName,
             description: x.Description,
             date: x.Date,
+            status: x.Status,
             data: x.Data
         }))
         : [];
@@ -346,6 +348,7 @@ const ConsumableForms = () => {
             projectName: projectName,
             description: description,
             date: date,
+            status: status ? status.value : "",
         }
 
         setLoader(true);
@@ -367,6 +370,7 @@ const ConsumableForms = () => {
                 setProjectName("");
                 setDescription("");
                 setDate(moment());
+                setStatus([]);
             })
             .catch(function (error) {
                 // handle error
@@ -386,6 +390,7 @@ const ConsumableForms = () => {
         setProjectName("");
         setDescription("");
         setDate(moment());
+        setStatus([])
     }
 
     const handleEditProjects = () => {
@@ -397,7 +402,8 @@ const ConsumableForms = () => {
             // id: id,
             ProjectName: projectName,
             Description: description,
-            Date: date
+            Date: date,
+            Status: status ? status.value : "",
         }
 
         setLoader(true);
@@ -419,6 +425,7 @@ const ConsumableForms = () => {
                 setProjectName("");
                 setDescription("");
                 setDate(moment());
+                setStatus([]);
             })
             .catch(function (error) {
                 // handle error
@@ -433,11 +440,13 @@ const ConsumableForms = () => {
     }
 
     const handleOpenEditModal = (params) => {
+        var stat = [{ label: params.status, value: params.status }];
         setEditModal(true);
         setId(params.id);
         setProjectName(params.projectName);
         setDescription(params.description);
         setDate(moment(params.date));
+        setStatus(stat);
     }
 
     const handleCloseEditModal = () => {
@@ -445,6 +454,7 @@ const ConsumableForms = () => {
         setId(-1);
         setProjectName("");
         setDescription("");
+        setStatus([]);
     }
 
     const handleDeleteItem = () => {
@@ -499,6 +509,7 @@ const ConsumableForms = () => {
         setProjectName("");
         setDescription("");
         setDate(moment());
+        setStatus([])
     }
 
     const handleCloseBorrowModal = () => {
@@ -769,6 +780,14 @@ const ConsumableForms = () => {
             });
     }
 
+    function StatusOption() {
+        var list = [
+            { value: "On Going", label: "On Going" },
+            { value: "Finished", label: "Finished" },
+        ];
+        return list;
+    }
+
     return (
         <div>
             <ToastContainer />
@@ -824,6 +843,12 @@ const ConsumableForms = () => {
                                                         <List.Header>{x.projectName}</List.Header>
                                                         <List.Description>{moment(x.date).format("MMMM DD, yyyy")}</List.Description>
                                                         <List.Description>{x.description}</List.Description>
+                                                        <List.Description>
+                                                            {x.status !== "" ?
+                                                                <Label color={x.status !== "On Going" ? "green" : "blue"}>{x.status}</Label> :
+                                                                ""
+                                                            }
+                                                        </List.Description>
                                                     </List.Content>
                                                 </List.Item>
                                             </List>
@@ -1092,6 +1117,28 @@ const ConsumableForms = () => {
                             value={moment(date).format("yyyy-MM-DD")}
                             onChange={e => setDate(e.target.value)}
                         />
+
+                        <br />
+
+                        <label><strong>Status</strong></label>
+                        <Select
+                            defaultValue={status}
+                            options={StatusOption()}
+                            onChange={e => setStatus(e)}
+                            placeholder='Status...'
+                            isClearable
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
+                        />
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
@@ -1240,6 +1287,28 @@ const ConsumableForms = () => {
                             type='date'
                             value={moment(date).format("yyyy-MM-DD")}
                             onChange={e => setDate(e.target.value)}
+                        />
+
+                        <br />
+
+                        <label><strong>Status</strong></label>
+                        <Select
+                            defaultValue={status}
+                            options={StatusOption()}
+                            onChange={e => setStatus(e)}
+                            placeholder='Status...'
+                            isClearable
+                            theme={(theme) => ({
+                                ...theme,
+                                // borderRadius: 0,
+                                colors: {
+                                    ...theme.colors,
+                                    text: 'black',
+                                    primary25: '#66c0f4',
+                                    primary: '#B9B9B9',
+                                },
+                            })}
+                            styles={customSelectStyle}
                         />
                     </Form>
                 </Modal.Content>

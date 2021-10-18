@@ -20,6 +20,7 @@ router.post("/add-form", async (request, response) => {
         ProjectName: request.body.projectName,
         Description: request.body.description,
         Date: request.body.date,
+        Status: request.body.status,
         FormType: "Consumables",
         IsDeleted: false,
     });
@@ -249,6 +250,7 @@ router.post("/list", verify, async (request, response) => {
                     "ProjectName": projects[i].ProjectName,
                     "Description": projects[i].Description,
                     "Date": projects[i].Date,
+                    "Status": projects[i].Status,
                     "IsDeleted": projects[i].IsDeleted,
 
                     "Data": consumableData
@@ -287,6 +289,7 @@ router.post("/list", verify, async (request, response) => {
                     "ProjectName": projects[i].ProjectName,
                     "Description": projects[i].Description,
                     "Date": projects[i].Date,
+                    "Status": projects[i].Status,
                     "IsDeleted": projects[i].IsDeleted,
 
                     "Data": consumableData
