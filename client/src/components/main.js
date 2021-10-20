@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Menu, Grid, Segment, Icon, Image, Button } from 'semantic-ui-react'
+import { Menu, Grid, Segment, Icon, Image, Button, Dropdown, Card } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 
 //Components
@@ -15,7 +15,7 @@ import UserContext from './context/userContext';
 
 const Main = () => {
   const { userData, setUserData } = useContext(UserContext);
-  const [page, setPage] = useState("TOOLS");
+  const [page, setPage] = useState("MENU");
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
 
@@ -48,87 +48,26 @@ const Main = () => {
   }
 
   return (
-    <Grid style={{ width: '100%', }}>
-      <Grid.Column width={2} style={{ height: '100%', }}>
-        <Menu inverted fluid vertical size='massive' style={{ height: '100%', minHeight: '100vh', maxHeight: '100vh' }}>
+    <div style={{ width: '100%', }}>
+      <Menu stackable inverted fixed style={{ position: "sticky", top: 0, zIndex: 1000 }}>
+        <Menu.Item>
+          <img src="unimore-logo.png" />
+        </Menu.Item>
 
-          <Menu.Item>
-            <div style={{ alignItem: 'center', textAlign: 'center' }}>
-              <Image src="unimore-logo.png" />
-              <p>{name}</p>
-              <Button size='small' onClick={logOut}><Icon color='white' name='log out' />Logout</Button>
-            </div>
+        <Menu.Menu position="right">
+          <Menu.Item onClick={() => handlePage("MENU")}>
+            <Icon color='white' name='th large' /> Menu
           </Menu.Item>
+          <Dropdown item text={name}>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={logOut}><Icon color='white' name='log out' /> Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Menu.Menu>
+      </Menu>
 
-          {role !== "Tool Keeper" &&
-            <Menu.Item
-              active={page === 'SPARE PARTS'}
-              onClick={() => handlePage("SPARE PARTS")}
-              color="blue"
-            >
-              <h4><Icon color='white' name='microchip' /> Machine Spare Parts</h4>
-            </Menu.Item>
-          }
-
-          <Menu.Item
-            active={page === 'TOOLS'}
-            onClick={() => handlePage("TOOLS")}
-            color="blue"
-          >
-            <h4><Icon color='white' name='gavel' /> Tools</h4>
-          </Menu.Item>
-
-          <Menu.Item
-            active={page === 'CONSUMABLES'}
-            onClick={() => handlePage("CONSUMABLES")}
-          >
-            <h4><Icon color='white' name='boxes' /> Consumables</h4>
-          </Menu.Item>
-
-          <Menu.Item
-            active={page === 'RECORDS'}
-            onClick={() => handlePage("RECORDS")}
-          >
-            <h4><Icon color='white' name='file alternate' /> Borrowed / Returned</h4>
-          </Menu.Item>
-
-          <Menu.Item
-            active={page === 'FORMS'}
-            onClick={() => handlePage("FORMS")}
-          >
-            <h4><Icon color='white' name='wpforms' /> Forms</h4>
-          </Menu.Item>
-
-          {
-            <Menu.Item
-              active={page === 'EMPLOYEES'}
-              onClick={() => handlePage("EMPLOYEES")}
-            >
-              <h4><Icon color='white' name='users' /> Employees</h4>
-            </Menu.Item>
-          }
-
-          {role === "Administrator" &&
-            <Menu.Item
-              active={page === 'MANAGE_USER'}
-              onClick={() => handlePage("MANAGE_USER")}
-            >
-              <h4><Icon color='white' name='user circle' /> Users</h4>
-            </Menu.Item>
-          }
-
-          {/* <Menu.Item
-            onClick={logOut}
-            // style={{ marginTop: '195%', }}
-            position="right"
-          > trtrtr
-            <h4><Icon color='white' name='log out' /> Logout</h4>
-          </Menu.Item> */}
-        </Menu>
-      </Grid.Column>
-
-      <Grid.Column stretched width={14}>
-        <Segment style={{ marginTop: 20, height: '100%', minHeight: '95vh', maxHeight: '95vh' }}>
+      <div style={{ paddingLeft: 30, paddingRight: 30 }}>
+        <Segment style={{ height: '100%', minHeight: '95vh', maxHeight: '95vh' }}>
           {page === "SPARE PARTS" && role !== "Tool Keeper" &&
             <MachineSpareParts />
           }
@@ -150,9 +89,68 @@ const Main = () => {
           {page === "MANAGE_USER" && role === "Administrator" &&
             <Users />
           }
+          {page === "MENU" &&
+            <Card.Group itemsPerRow={4}>
+            <Card
+                link
+                header={<h1>MACHINE SPARE PARTS</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("spareparts.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "right" }}
+                onClick={() => handlePage("SPARE PARTS")}
+                color="blue"
+              />
+
+              <Card
+                link
+                header={<h1>TOOLS</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("tools.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", }}
+                onClick={() => handlePage("TOOLS")}
+                color="blue"
+              />
+
+              <Card
+                link
+                header={<h1>CONSUMABLES</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("consumables.jpg")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
+                onClick={() => handlePage("CONSUMABLES")}
+                color="blue"
+              />
+
+              <Card
+                link
+                header={<h1 style={{ backgroundColor: 'white'}}>BORROWED / RETURNED</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("records.jpeg")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", }}
+                onClick={() => handlePage("RECORDS")}
+                color="blue"
+              />
+
+              <Card
+                link
+                header={<h1>PROJECTS</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("projects.jpg")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
+                onClick={() => handlePage("FORMS")}
+                color="blue"
+              />
+
+              <Card
+                link
+                header={<h1>EMPLOYEES</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("employees.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
+                onClick={() => handlePage("EMPLOYEES")}
+                color="blue"
+              />
+
+              <Card
+                link
+                header={<h1>USERS</h1>}
+                style={{ minHeight: "20vh", backgroundImage: `url("users.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
+                onClick={() => handlePage("MANAGE_USER")}
+                color="blue"
+              />
+            </Card.Group>
+          }
         </Segment>
-      </Grid.Column>
-    </Grid >
+      </div>
+    </div >
   );
 }
 
