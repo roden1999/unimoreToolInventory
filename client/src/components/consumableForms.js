@@ -111,6 +111,7 @@ const ConsumableForms = () => {
     const [project, setProject] = useState("");
     const [dateIssued, setDateIssued] = useState(moment());
     const [issuedBy, setIssuedBy] = useState("");
+    const [remarks, setRemarks] = useState("");
     const [deleteItemModal, setDeleteItemModal] = useState(false);
     const [addQtyModal, setAddQtyModal] = useState(false);
     const [subtractQtyModal, setSubtractQtyModal] = useState(false);
@@ -518,6 +519,7 @@ const ConsumableForms = () => {
         setEmployeeId("");
         setQuantity(0);
         setDateIssued(moment());
+        setRemarks("");
         setProject("");
     }
 
@@ -538,6 +540,7 @@ const ConsumableForms = () => {
             dateIssued: dateIssued,
             project: project,
             status: "",
+            remarks: remarks,
             issuedBy: issuedBy,
         }
 
@@ -560,6 +563,7 @@ const ConsumableForms = () => {
                 setEmployeeId("");
                 setQuantity(0);
                 setDateIssued(moment());
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -730,6 +734,7 @@ const ConsumableForms = () => {
         setItemId(params._id);
         setItemBorrower(borrower);
         setItemDateIssued(params.DateIssued);
+        setRemarks(params.Remarks);
     }
 
     const handleCancelEditItem = () => {
@@ -737,6 +742,7 @@ const ConsumableForms = () => {
         setItemId(-1);
         setItemBorrower(null);
         setItemDateIssued("");
+        setRemarks("");
     }
 
     const handleSubmitEditItem = () => {
@@ -746,7 +752,8 @@ const ConsumableForms = () => {
 
         var data = {
             EmployeeId: itemBorrower ? itemBorrower.value : "",
-            DateIssued: itemDateIssued
+            DateIssued: itemDateIssued,
+            Remarks: remarks,
         }
 
         setLoader(true);
@@ -767,6 +774,7 @@ const ConsumableForms = () => {
                 setItemId(-1);
                 setItemBorrower(null);
                 setItemDateIssued("");
+                setRemarks("");
             })
             .catch(function (error) {
                 // handle error
@@ -914,6 +922,7 @@ const ConsumableForms = () => {
                                                         <Table.HeaderCell rowSpan='2'>Borrower</Table.HeaderCell>
                                                         <Table.HeaderCell rowSpan='2'>Issued By</Table.HeaderCell>
                                                         <Table.HeaderCell rowSpan='2'>Date Issued</Table.HeaderCell>
+                                                        <Table.HeaderCell rowSpan='2'>Remarks</Table.HeaderCell>
                                                         <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
                                                     </Table.Row>
                                                 </Table.Header>
@@ -931,6 +940,7 @@ const ConsumableForms = () => {
                                                             <TableCell>{y.EmployeeName}</TableCell>
                                                             <TableCell>{y.IssuedBy}</TableCell>
                                                             <TableCell>{moment(y.DateIssued).format("MMM DD, yyyy")}</TableCell>
+                                                            <TableCell>{y.Remarks}</TableCell>
                                                             <TableCell style={{ textAlign: 'center' }}>
                                                                 <div className='ui one buttons'>
                                                                     {
@@ -1235,6 +1245,20 @@ const ConsumableForms = () => {
                         <br />
                         <br />
 
+                        <label><b>Remarks</b></label>
+                        <input
+                            fluid
+                            label='Remarks'
+                            placeholder='remarks'
+                            id='form-input-remarks'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
+                        />
+
+                        <br />
+                        <br />
+
                         <label><b>Issued By:</b> {issuedBy}</label>
                     </Form>
                 </Modal.Content>
@@ -1362,6 +1386,19 @@ const ConsumableForms = () => {
                             type='date'
                             value={moment(itemDateIssued).format("yyyy-MM-DD")}
                             onChange={e => setItemDateIssued(e.target.value)}
+                        />
+
+                        <br />
+
+                        <label><b>Remarks</b></label>
+                        <input
+                            fluid
+                            label='Remarks'
+                            placeholder='remarks'
+                            id='form-input-date-issued'
+                            size='medium'
+                            value={remarks}
+                            onChange={e => setRemarks(e.target.value)}
                         />
                     </Form>
                 </Modal.Content>

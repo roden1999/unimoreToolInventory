@@ -25,6 +25,9 @@ const consumableFormSchema = new mongoose.Schema({
 	Status: {
 		type: String,
     },
+	Remarks: {
+		type: String,
+    },
     IssuedBy: {
         type: String,
     },

@@ -212,6 +212,7 @@ const consumableFormValidation = (data) => {
 		dateIssued: Joi.string().required().messages({
 			"string.empty": `Date is required.`
 		}),
+		remarks: Joi.string().allow(''),
 		status: Joi.string().allow(''),
 		project: Joi.string().required().messages({
 			"string.empty": `Project is required.`

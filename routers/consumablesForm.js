@@ -80,6 +80,7 @@ router.post("/add-item", verify, async (request, response) => {
         ProjectId: request.body.project,
         Quantity: request.body.used,
         Status: request.body.status,
+        Remarks: request.body.remarks,
         IssuedBy: request.body.issuedBy,
     });
 
@@ -240,6 +241,7 @@ router.post("/list", verify, async (request, response) => {
                         "Quantity": records[j].Quantity,
                         // "Project": !project ? "" : project[0].ProjectName,
                         "Status": records[j].Status,
+                        "Remarks": records[j].Remarks,
                         "IssuedBy": records[j].IssuedBy,
                     }
                     consumableData.push(recordData);
@@ -279,6 +281,7 @@ router.post("/list", verify, async (request, response) => {
                         "Quantity": records[j].Quantity,
                         // "Project": !project ? "" : project[0].ProjectName,
                         "Status": records[j].Status,
+                        "Remarks": records[j].Remarks,
                         "IssuedBy": records[j].IssuedBy,
                     }
                     consumableData.push(recordData);
