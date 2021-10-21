@@ -4,6 +4,13 @@ import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+
+//import pdfmake
+import pdfMake from 'pdfmake/build/pdfmake.js';
+import pdfFonts from 'pdfmake/build/vfs_fonts.js';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 const axios = require("axios");
 const moment = require("moment");
 
@@ -707,6 +714,100 @@ const Projects = () => {
         return list;
     }
 
+    const exportToPDF = (e) => {
+        const document = {
+            content: [
+                { image: 'unimore', width: 195, height: 70 },
+                {
+                    columns: [
+                        [
+                            { text: "TOOLS", fontSize: 15, bold: true, lineHeight: 1 },
+                            { text: "Project Name: " + e.projectName, fontSize: 12, bold: true, lineHeight: 1 },
+                            { text: "Description: " + e.description, fontSize: 12, bold: false, lineHeight: 1, },
+                        ],
+                        [
+                            { text: "Date: " + moment(e.date).format("MMM DD"), fontSize: 12, bold: false, lineHeight: 1, },
+                            { text: "Status: " + e.status, fontSize: 12, bold: false, lineHeight: 1, },
+                        ]
+                    ]
+                },
+            ],
+            images: {
+                unimore: 'https://i.ibb.co/mTwt2jt/unimore-logo-back-black.png'
+            }
+        }
+
+        document.content.push({
+            // layout: 'lightHorizontalLines',
+            table: {
+                headerRows: 1,
+                widths: [80, 50, 78, 60, 37, 70, 70],
+                body: [
+                    //Data
+                    //Header
+                    [
+                        { text: 'Tool Name', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                        { text: 'Serial No.', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                        { text: 'Borrower', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                        { text: 'Date Borrowed', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                        { text: 'Returned', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                        { text: 'Date Returned', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                        { text: 'Remarks', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                    ],
+                ]
+            },
+        });
+
+        e.borrowedTools.forEach(y => {
+            document.content.push({
+                // layout: 'lightHorizontalLines',
+                table: {
+                    headerRows: 1,
+                    widths: [80, 50, 78, 60, 37, 70, 70],
+                    body: [
+                        //Data
+                        [
+                            { text: y.ToolName, fontSize: 7, alignment: "left", },
+                            { text: y.SerialNo, fontSize: 7, alignment: "left", },
+                            { text: y.EmployeeName, fontSize: 7, alignment: "left", },
+                            { text: moment(y.DateBorrowed).format("MM/DD/yyyy").toString(), fontSize: 7, alignment: "center", },
+                            { text: y.Status, fontSize: 7, alignment: "center", color: y.Status === "Returned" ? "green" : "black"},
+                            { text: moment(y.DateReturned).format("MM/DD/yyyy | h:mm a").toString(), fontSize: 7, alignment: "center", },
+                            { text: y.Remarks, fontSize: 7, alignment: "left", },
+                        ],
+                    ],
+                    // lineHeight: 2
+                },
+            });
+        });
+
+        pdfMake.tableLayouts = {
+            exampleLayout: {
+                hLineWidth: function (i, node) {
+                    if (i === 0 || i === node.table.body.length) {
+                        return 0;
+                    }
+                    return (i === node.table.headerRows) ? 2 : 1;
+                },
+                vLineWidth: function (i) {
+                    return 0;
+                },
+                hLineColor: function (i) {
+                    return i === 1 ? 'black' : '#aaa';
+                },
+                paddingLeft: function (i) {
+                    return i === 0 ? 0 : 8;
+                },
+                paddingRight: function (i, node) {
+                    return (i === node.table.widths.length - 1) ? 0 : 8;
+                }
+            }
+        };
+
+        // pdfMake.createPdf(document).download();
+        pdfMake.createPdf(document).print({}, window.frames['printPdf']);
+    }
+
 
     return (
         <div>
@@ -823,9 +924,10 @@ const Projects = () => {
                             <div color='blue' key={x.id}>
                                 {x.id === projId &&
                                     <div>
+                                        <Button size='medium' style={{ marginBottom: 10 }} onClick={() => exportToPDF(x)}><Icon name='file pdf' />Export to PDF</Button>
                                         <Button size='medium' style={{ float: 'right', marginBottom: 10 }} onClick={() => handleBorrowTool(x.id)}><Icon name='plus' />Add Tool</Button>
-                                        <Input type="date" label="To Date" style={{ float: 'right', marginRight: 10 }} value={toDate} onChange={e => setToDate(e.target.value)} />
-                                        <Input type="date" label="From Date" style={{ float: 'right', marginRight: 10 }} value={fromDate} onChange={e => setFromDate(e.target.value)} />
+                                        <Input size='small' type="date" label="To Date" style={{ float: 'right', marginRight: 10 }} value={toDate} onChange={e => setToDate(e.target.value)} />
+                                        <Input size='small' type="date" label="From Date" style={{ float: 'right', marginRight: 10 }} value={fromDate} onChange={e => setFromDate(e.target.value)} />
 
                                         <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '60vh' }}>
                                             <Table celled color="blue">
