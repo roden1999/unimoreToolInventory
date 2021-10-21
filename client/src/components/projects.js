@@ -120,7 +120,7 @@ const Projects = () => {
     const [dateBorrowed, setDateBorrowed] = useState(moment());
     const [processedBy, setProcessedBy] = useState("");
     const [remarks, setRemarks] = useState("");
-    const [fromDate, setFromDate] = useState(moment().startOf('month').format('MM/DD/yyyy'));
+    const [fromDate, setFromDate] = useState(moment().format('01/01/2021'));
     const [toDate, setToDate] = useState(moment().format('MM/DD/yyyy'));
     const [editItem, setEditItem] = useState(false);
     const [itemId, setItemId] = useState(-1);
