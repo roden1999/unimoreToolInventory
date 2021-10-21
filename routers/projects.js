@@ -61,6 +61,8 @@ router.put("/:id", async (request, response) => {
 //List of Projects
 router.post("/list", verify, async (request, response) => {
     try {
+        var fromDate = request.body.fromDate !== "" ? request.body.fromDate : moment("01/01/2020", "yyyy-MM-DD");
+        var toDate = request.body.toDate !== "" ? request.body.toDate : moment().format("yyyy-MM-DD");
         var page = request.body.page !== "" ? request.body.page : 0;
         var perPage = 20;
         if (Object.keys(request.body.selectedProject).length > 0) {
@@ -79,7 +81,10 @@ router.post("/list", verify, async (request, response) => {
             for (const i in projects) {
                 var borrowedTools = [];
 
-                const records = await recordModel.find({ ProjectId: projects[i]._id }).sort('-DateBorrowed');
+                const records = await recordModel.find({
+                    ProjectId: projects[i]._id,
+                    DateBorrowed: { $gte: new Date(fromDate).setHours(05, 00, 00), $lte: new Date(toDate).setHours(23, 59, 59) },
+                }).sort('-DateBorrowed');
                 for (const i in records) {
                     var tool = await toolModel.find({ _id: records[i].ToolId });
                     var employee = await employeeModel.find({ _id: records[i].EmployeeId });
@@ -121,7 +126,10 @@ router.post("/list", verify, async (request, response) => {
             for (const i in projects) {
                 var borrowedTools = [];
 
-                const records = await recordModel.find({ ProjectId: projects[i]._id }).sort('-DateBorrowed');                
+                const records = await recordModel.find({
+                    ProjectId: projects[i]._id,
+                    DateBorrowed: { $gte: new Date(fromDate).setHours(05, 00, 00), $lte: new Date(toDate).setHours(23, 59, 59) },
+                }).sort('-DateBorrowed');
                 for (const i in records) {
                     var tool = await toolModel.find({ _id: records[i].ToolId });
                     var employee = await employeeModel.find({ _id: records[i].EmployeeId });
@@ -165,14 +173,14 @@ router.post("/list", verify, async (request, response) => {
 
 // list total form
 router.get("/total-form", async (request, response) => {
-	try {
-		// const data = await timeLogsModel.find().sort('employeeName');
-		const data = await projectModel.find({ IsDeleted: false, FormType: "Tools" });
+    try {
+        // const data = await timeLogsModel.find().sort('employeeName');
+        const data = await projectModel.find({ IsDeleted: false, FormType: "Tools" });
 
-		response.status(200).json(data.length);
-	} catch (error) {
-		response.status(500).json({ error: error.message });
-	}
+        response.status(200).json(data.length);
+    } catch (error) {
+        response.status(500).json({ error: error.message });
+    }
 });
 
 //For search options

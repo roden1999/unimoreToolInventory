@@ -43,7 +43,7 @@ const Main = () => {
     sessionStorage.setItem("auth-token", "");
     sessionStorage.setItem("userData", "");
     sessionStorage.setItem("user", "");
-    sessionStorage.setItem("page", "TOOLS");
+    sessionStorage.setItem("page", "MENU");
     // Storage.empty();
   }
 
@@ -51,13 +51,15 @@ const Main = () => {
     <div style={{ width: '100%', }}>
       <Menu stackable inverted fixed style={{ position: "sticky", top: 0, zIndex: 1000 }}>
         <Menu.Item>
-          <img src="unimore-logo.png" />
+        <img src="unimore-logo.png" /> {" Unimore Trading"}
         </Menu.Item>
 
         <Menu.Menu position="right">
-          <Menu.Item onClick={() => handlePage("MENU")}>
-            <Icon color='white' name='th large' /> Menu
-          </Menu.Item>
+          {page !== "MENU" &&
+            <Menu.Item onClick={() => handlePage("MENU")}>
+              <Icon color='white' name='th large' /> Menu
+            </Menu.Item>
+          }
           <Dropdown item text={name}>
             <Dropdown.Menu>
               <Dropdown.Item onClick={logOut}><Icon color='white' name='log out' /> Logout</Dropdown.Item>
@@ -91,13 +93,15 @@ const Main = () => {
           }
           {page === "MENU" &&
             <Card.Group itemsPerRow={4}>
-            <Card
-                link
-                header={<h1>MACHINE SPARE PARTS</h1>}
-                style={{ minHeight: "20vh", backgroundImage: `url("spareparts.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "right" }}
-                onClick={() => handlePage("SPARE PARTS")}
-                color="blue"
-              />
+              {role !== "Tool Keeper" &&
+                <Card
+                  link
+                  header={<h1>MACHINE SPARE PARTS</h1>}
+                  style={{ minHeight: "20vh", backgroundImage: `url("spareparts.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "right" }}
+                  onClick={() => handlePage("SPARE PARTS")}
+                  color="blue"
+                />
+              }
 
               <Card
                 link
@@ -117,7 +121,7 @@ const Main = () => {
 
               <Card
                 link
-                header={<h1 style={{ backgroundColor: 'white'}}>BORROWED / RETURNED</h1>}
+                header={<h1 style={{ backgroundColor: 'white' }}>BORROWED / RETURNED</h1>}
                 style={{ minHeight: "20vh", backgroundImage: `url("records.jpeg")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", }}
                 onClick={() => handlePage("RECORDS")}
                 color="blue"
@@ -139,13 +143,15 @@ const Main = () => {
                 color="blue"
               />
 
-              <Card
-                link
-                header={<h1>USERS</h1>}
-                style={{ minHeight: "20vh", backgroundImage: `url("users.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
-                onClick={() => handlePage("MANAGE_USER")}
-                color="blue"
-              />
+              {role === "Administrator" &&
+                <Card
+                  link
+                  header={<h1>USERS</h1>}
+                  style={{ minHeight: "20vh", backgroundImage: `url("users.png")`, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
+                  onClick={() => handlePage("MANAGE_USER")}
+                  color="blue"
+                />
+              }
             </Card.Group>
           }
         </Segment>

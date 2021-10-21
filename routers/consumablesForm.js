@@ -208,8 +208,10 @@ router.put("/subtract-quantity/:id", async (request, response) => {
 //List of Projects
 router.post("/list", verify, async (request, response) => {
     try {
+        var fromDate = request.body.fromDate !== "" ? request.body.fromDate : moment("01/01/2020", "yyyy-MM-DD");
+        var toDate = request.body.toDate !== "" ? request.body.toDate : moment().format("yyyy-MM-DD");
         var page = request.body.page !== "" ? request.body.page : 0;
-		var perPage = 20;
+        var perPage = 20;
         if (Object.keys(request.body.selectedProject).length > 0) {
             var id = [];
             var data = request.body.selectedProject;
@@ -226,7 +228,10 @@ router.post("/list", verify, async (request, response) => {
             for (const i in projects) {
                 var consumableData = [];
 
-                const records = await consumableFormModel.find({ ProjectId: projects[i]._id }).sort('-DateBorrowed');
+                const records = await consumableFormModel.find({
+                    ProjectId: projects[i]._id,
+                    DateIssued: { $gte: new Date(fromDate).setHours(05, 00, 00), $lte: new Date(toDate).setHours(23, 59, 59) },
+                }).sort('-DateIssued');
                 for (const j in records) {
                     var item = await consumableModel.find({ _id: records[j].ConsumableId });
                     var employee = await employeeModel.find({ _id: records[j].EmployeeId });
@@ -266,7 +271,10 @@ router.post("/list", verify, async (request, response) => {
             for (const i in projects) {
                 var consumableData = [];
 
-                const records = await consumableFormModel.find({ ProjectId: projects[i]._id }).sort('-DateIssued');
+                const records = await consumableFormModel.find({
+                    ProjectId: projects[i]._id,
+                    DateIssued: { $gte: new Date(fromDate).setHours(05, 00, 00), $lte: new Date(toDate).setHours(23, 59, 59) },
+                }).sort('-DateIssued');
                 for (const j in records) {
                     var item = await consumableModel.find({ _id: records[j].ConsumableId });
                     var employee = await employeeModel.find({ _id: records[j].EmployeeId });

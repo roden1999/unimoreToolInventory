@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Form, Button, Card, Icon, Table, TableCell, Pagination, List, Grid, Menu, Segment, Label } from 'semantic-ui-react'
+import { Modal, Form, Button, Card, Icon, Table, TableCell, Pagination, List, Grid, Menu, Segment, Label, Input } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -115,6 +115,8 @@ const ConsumableForms = () => {
     const [deleteItemModal, setDeleteItemModal] = useState(false);
     const [addQtyModal, setAddQtyModal] = useState(false);
     const [subtractQtyModal, setSubtractQtyModal] = useState(false);
+    const [fromDate, setFromDate] = useState(moment().startOf('month').format('MM/DD/yyyy'));
+    const [toDate, setToDate] = useState(moment().format('MM/DD/yyyy'));
     const [editItem, setEditItem] = useState(false);
     const [itemId, setItemId] = useState(-1);
     const [itemBorrower, setItemBorrower] = useState(null);
@@ -132,6 +134,8 @@ const ConsumableForms = () => {
     useEffect(() => {
         var data = {
             selectedProject: !selectedProject ? [] : selectedProject,
+            fromDate: fromDate,
+            toDate: toDate,
             page: page
         };
         var route = "consumablesForm/list";
@@ -162,7 +166,7 @@ const ConsumableForms = () => {
             .finally(function () {
                 // always executed
             });
-    }, [selectedProject, page, loader]);
+    }, [selectedProject, fromDate, toDate, page, loader]);
 
     const projectsList = projectData
         ? projectData.map((x) => ({
@@ -912,6 +916,8 @@ const ConsumableForms = () => {
                                 {x.id === projId &&
                                     <div>
                                         <Button size='medium' style={{ float: 'right', marginBottom: 10 }} onClick={() => handleOpenItemModal(x.id)}><Icon name='plus' />Add Item</Button>
+                                        <Input type="date" label="To Date" style={{ float: 'right', marginRight: 10 }} value={toDate} onChange={e => setToDate(e.target.value)} />
+                                        <Input type="date" label="From Date" style={{ float: 'right', marginRight: 10 }} value={fromDate} onChange={e => setFromDate(e.target.value)} />
 
                                         <div style={{ overflowY: 'scroll', width: "100%", height: '100%', maxHeight: '60vh' }}>
                                             <Table celled color="blue">
