@@ -9,59 +9,59 @@ const axios = require("axios");
 
 const customMultiSelectStyle = {
     clearIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: '#383f48',
+        ...ci
+        // backgroundColor: '#383f48',
     }),
     dropdownIndicator: (ci) => ({
-      ...ci
-      // backgroundColor: "#383f48"
+        ...ci
+        // backgroundColor: "#383f48"
     }),
     indicatorsContainer: (ci) => ({
-      ...ci,
-      color: "red",
-      // backgroundColor: "#383f48",
-      position: "sticky",
-      top: 0,
-      height: "40px",
-      zIndex: "100"
+        ...ci,
+        color: "red",
+        // backgroundColor: "#383f48",
+        position: "sticky",
+        top: 0,
+        height: "40px",
+        zIndex: "100"
     }),
     control: (base) => ({
-      ...base,
-      height: 40,
-      minHeight: 40,
-      overflowX: "hidden",
-      overflowY: "auto",
-      borderRadiusTopRight: 0,
-      borderRadiusBottomRight: 0,
-      width: "100%"
-      // backgroundColor: '#383f48',
+        ...base,
+        height: 40,
+        minHeight: 40,
+        overflowX: "hidden",
+        overflowY: "auto",
+        borderRadiusTopRight: 0,
+        borderRadiusBottomRight: 0,
+        width: "100%"
+        // backgroundColor: '#383f48',
     }),
     option: (provided, state) => ({
-      ...provided,
-      color: state.isSelected ? 'white' : 'black',
-      padding: 20,
-      zIndex: 1000
+        ...provided,
+        color: state.isSelected ? 'white' : 'black',
+        padding: 20,
+        zIndex: 1000
     }),
     singleValue: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     multiValue: (styles, { data }) => {
-      return {
-        ...styles,
-        backgroundColor: "#1E8EFF",
-      };
+        return {
+            ...styles,
+            backgroundColor: "#1E8EFF",
+        };
     },
     multiValueLabel: (styles, { data }) => ({
-      ...styles,
-      color: "#00000",
+        ...styles,
+        color: "#00000",
     }),
     input: base => ({
-      ...base,
-      // color: "#fff"
+        ...base,
+        // color: "#fff"
     }),
     menu: (provided) => ({ ...provided, zIndex: 9999 }),
-  };
+};
 
 const customSelectStyle = {
     control: base => ({
@@ -167,6 +167,7 @@ const Tools = () => {
             location: x.Location,
             description: x.Description,
             status: x.Status,
+            available: x.Available
         }))
         : [];
 
@@ -651,6 +652,7 @@ const Tools = () => {
                             <Table.HeaderCell rowSpan='2'>Status</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Location</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Description</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Available</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
@@ -685,6 +687,18 @@ const Tools = () => {
                                 </Table.Cell>
                                 <Table.Cell>{x.location}</Table.Cell>
                                 <Table.Cell>{x.description}</Table.Cell>
+                                <Table.Cell>
+                                    {x.available === "On Hand" &&
+                                        <a style={{ color: "green" }}>
+                                            {x.available}
+                                        </a>
+                                    }
+                                    {x.available === "Borrowed" &&
+                                        <a style={{ color: "red" }}>
+                                            {x.available}
+                                        </a>
+                                    }
+                                </Table.Cell>
                                 <Table.Cell style={{ textAlign: 'center' }}>
                                     <div className='ui two buttons'>
                                         <Button basic color='grey' onClick={() => handleOpenEditModal(x)}>

@@ -2,6 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const verify = require("../utils/verifyToken");
 const toolsModel = require("../models/tool");
+const recordModel = require("../models/record");
 const { toolsValidation, toolsEditValidation } = require("../utils/validation");
 
 //Insert new user to the database
@@ -109,6 +110,8 @@ router.post("/list", verify, async (request, response) => {
 
 			var data = [];
 			for (const i in tools) {
+				const records = await recordModel.find({ Status: "Borrowed",  ToolId: tools[i]._id }).sort('-DateReturned');
+				var available = Object.keys(records).length === 0 ? "On Hand" : records[0].Status;
 				var tool = {
 					"_id": tools[i]._id,
 					"SerialNo": tools[i].SerialNo,
@@ -119,6 +122,7 @@ router.post("/list", verify, async (request, response) => {
 					"Location": tools[i].Location,
 					"Description": tools[i].Description,
 					"Status": tools[i].Status,
+					"Available": available,
 				}
 				data.push(tool);
 			}
@@ -152,6 +156,8 @@ router.post("/list", verify, async (request, response) => {
 			const tools = await toolsModel.find({ IsDeleted: false, '$where': filter }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in tools) {
+				const records = await recordModel.find({ Status: "Borrowed",  ToolId: tools[i]._id }).sort('-DateReturned');
+				var available = Object.keys(records).length === 0 ? "On Hand" : records[0].Status;
 				var tool = {
 					"_id": tools[i]._id,
 					"SerialNo": tools[i].SerialNo,
@@ -162,6 +168,7 @@ router.post("/list", verify, async (request, response) => {
 					"Location": tools[i].Location,
 					"Description": tools[i].Description,
 					"Status": tools[i].Status,
+					"Available": available,
 				}
 				data.push(tool);
 			}
