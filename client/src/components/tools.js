@@ -91,7 +91,7 @@ const customSelectStyle = {
 
 const Tools = () => {
     const [toolsData, setToolsData] = useState(null);
-    const [selectedTools, setSelectedTools] = useState(null);
+    const [selectedTools, setSelectedTools] = useState([]);
     const [loader, setLoader] = useState(false);
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
@@ -783,21 +783,23 @@ const Tools = () => {
                 }
 
             </div>
-            <Pagination
-                activePage={toolPage}
-                boundaryRange={boundaryRange}
-                onPageChange={(e, { activePage }) => setToolPage(activePage)}
-                size='mini'
-                siblingRange={siblingRange}
-                totalPages={totalTools / 12}
-                // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
-                ellipsisItem={showEllipsis ? undefined : null}
-                firstItem={showFirstAndLastNav ? undefined : null}
-                lastItem={showFirstAndLastNav ? undefined : null}
-                prevItem={showPreviousAndNextNav ? undefined : null}
-                nextItem={showPreviousAndNextNav ? undefined : null}
-                style={{ float: 'right', marginTop: 10 }}
-            />
+            {Object.keys(selectedTools).length === 0 &&
+                <Pagination
+                    activePage={toolPage}
+                    boundaryRange={boundaryRange}
+                    onPageChange={(e, { activePage }) => setToolPage(activePage)}
+                    size='mini'
+                    siblingRange={siblingRange}
+                    totalPages={totalTools / 12}
+                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                    ellipsisItem={showEllipsis ? undefined : null}
+                    firstItem={showFirstAndLastNav ? undefined : null}
+                    lastItem={showFirstAndLastNav ? undefined : null}
+                    prevItem={showPreviousAndNextNav ? undefined : null}
+                    nextItem={showPreviousAndNextNav ? undefined : null}
+                    style={{ float: 'right', marginTop: 10 }}
+                />
+            }
 
             <Modal
                 size="mini"

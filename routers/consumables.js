@@ -79,7 +79,7 @@ router.post("/list", async (request, response) => {
 			const items = await consumableModel.find({
 				'$or': id,
 				IsDeleted: false
-			}).skip((page - 1) * perPage).limit(perPage).sort('Name');
+			}).sort('Name');
 
 			var data = [];
 			for (const i in items) {

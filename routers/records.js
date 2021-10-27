@@ -112,7 +112,7 @@ router.post("/list-borrowed", async (request, response) => {
 			const records = await recordModel.find({
 				'$or': id,
 				Status: "Borrowed"
-			}).skip((page - 1) * perPage).limit(perPage).sort('-DateBorrowed');
+			}).sort('-DateBorrowed');
 
 			var data = [];
 			for (const i in records) {
@@ -181,7 +181,7 @@ router.post("/list-returned", async (request, response) => {
 			const records = await recordModel.find({
 				'$or': id,
 				Status: "Returned"
-			}).skip((page - 1) * perPage).limit(perPage).sort('-DateReturned');
+			}).sort('-DateReturned');
 
 			var data = [];
 			for (const i in records) {

@@ -106,7 +106,7 @@ router.post("/list", verify, async (request, response) => {
 				'$or': id,
 				'$where': filter,
 				IsDeleted: false
-			}).skip((page - 1) * perPage).limit(perPage).sort('Name');
+			}).sort('Name');
 
 			var data = [];
 			for (const i in tools) {

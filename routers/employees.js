@@ -102,7 +102,7 @@ router.post("/list", verify, async (request, response) => {
 			const employees = await employeeModel.find({
 				'$or': id,
 				IsDeleted: false
-			}).skip((page - 1) * perPage).limit(perPage).sort('FirstName');
+			}).sort('FirstName');
 
 			var data = [];
 			for (const i in employees) {
