@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Form, Button, Card, Icon, Pagination, Table } from 'semantic-ui-react'
+import { Modal, Form, Button, Card, Icon, Pagination, Table, Label } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
@@ -102,6 +102,7 @@ const Consumables = () => {
     const [description, setDescription] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [used, setUsed] = useState(0);
+    const [critLevel, setCritLevel] = useState(0);
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [deletePopup, setDeletePopup] = useState(false);
@@ -156,8 +157,8 @@ const Consumables = () => {
             description: x.Description,
             quantity: x.Quantity,
             used: x.Used,
-            critLevelPercentage: x.CritLevelPercentage,
             critLevel: x.CritLevel,
+            critLevelIndicator: x.CritLevelIndicator,
         }))
         : [];
 
@@ -241,7 +242,8 @@ const Consumables = () => {
             datePurchased: datePurchased,
             description: description,
             quantity: quantity,
-            used: used
+            used: used,
+            critLevel: critLevel
         }
 
         setLoader(true);
@@ -267,6 +269,7 @@ const Consumables = () => {
                 setDescription("");
                 setQuantity(0);
                 setUsed(0);
+                setCritLevel(0);
             })
             .catch(function (error) {
                 // handle error
@@ -304,7 +307,8 @@ const Consumables = () => {
             DatePurchased: datePurchased,
             Description: description,
             Quantity: quantity,
-            Used: used
+            Used: used,
+            CriticalLevel: critLevel
         }
 
         setLoader(true);
@@ -330,6 +334,7 @@ const Consumables = () => {
                 setDescription("");
                 setQuantity(0);
                 setUsed(0);
+                setCritLevel(0);
             })
             .catch(function (error) {
                 // handle error
@@ -354,6 +359,7 @@ const Consumables = () => {
         setDescription(params.description);
         setQuantity(params.quantity);
         setUsed(params.used);
+        setCritLevel(params.critLevel);
     }
 
     const handleCloseEditModal = () => {
@@ -366,6 +372,7 @@ const Consumables = () => {
         setDescription("");
         setQuantity(0);
         setUsed(0);
+        setCritLevel(0);
     }
 
     const handleDeleteItem = () => {
@@ -473,19 +480,23 @@ const Consumables = () => {
             </div>
 
             <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
-                <Table celled size='large'>
+                <Table celled structured size='large' color='blue'>
                     <Table.Header style={{ position: "sticky", top: 0 }}>
                         <Table.Row>
                             <Table.HeaderCell rowSpan='2'>Name</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Brand</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Unit</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan='2'>Stock</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2'>Total Item Received</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Used</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Total Available</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Date Purchased</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan='2'>Crit Level %</Table.HeaderCell>
+                            <Table.HeaderCell colSpan='2' style={{ textAlign: 'center', zIndex: 2 }}>Critical Level</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='2'>Description</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center' }}>Action</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2' style={{ textAlign: 'center', zIndex: 2 }}>Action</Table.HeaderCell>
+                        </Table.Row>
+                        <Table.Row>
+                            <Table.HeaderCell rowSpan='2' style={{ zIndex: 2 }}>Crit Value</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan='2' style={{ zIndex: 2 }}>Status</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 
@@ -499,7 +510,19 @@ const Consumables = () => {
                                 <Table.Cell>{x.used.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Table.Cell>
                                 <Table.Cell>{(x.quantity - x.used).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Table.Cell>
                                 <Table.Cell>{x.datePurchased ? moment(x.datePurchased).format("MM/DD/yyyy") : "No Date"}</Table.Cell>
-                                <Table.Cell negative={x.critLevel}>{x.critLevelPercentage + "%"}</Table.Cell>
+                                <Table.Cell>{x.critLevel}</Table.Cell>
+                                <Table.Cell positive={x.critLevelIndicator === false ? true : false} negative={x.critLevelIndicator} style={{ textAlign: "center" }}>
+                                    {(x.quantity - x.used) > 0 &&
+                                        < Label color={x.critLevelIndicator === false ? "green" : "orange"} horizontal>
+                                            {x.critLevelIndicator === false ? "Good" : "Low of Stocks"}
+                                        </Label>
+                                    }
+                                    {(x.quantity - x.used) <= 0 &&
+                                        < Label color="red" horizontal>
+                                            Out of Stocks
+                                        </Label>
+                                    }
+                                </Table.Cell>
                                 <Table.Cell>{x.description}</Table.Cell>
                                 <Table.Cell style={{ textAlign: 'center' }}>
                                     <div className='ui two buttons'>
@@ -566,7 +589,8 @@ const Consumables = () => {
 
             </div>
 
-            {Object.keys(selectedConsumables).length === 0 &&
+            {
+                Object.keys(selectedConsumables).length === 0 &&
                 <Pagination
                     activePage={itemPage}
                     boundaryRange={boundaryRange}
@@ -669,6 +693,18 @@ const Consumables = () => {
                             min="0"
                             value={quantity}
                             onChange={e => setQuantity(e.target.value)}
+                        />
+
+                        <Form.Input
+                            fluid
+                            label='Critical Level'
+                            placeholder='critical level'
+                            id='form-input-criticallevel'
+                            type="number"
+                            size='medium'
+                            min="0"
+                            value={critLevel}
+                            onChange={e => setCritLevel(e.target.value)}
                         />
                     </Form>
                 </Modal.Content>
@@ -780,6 +816,18 @@ const Consumables = () => {
                             value={used}
                             onChange={e => setUsed(e.target.value)}
                         />
+
+                        <Form.Input
+                            fluid
+                            label='Critical Level'
+                            placeholder='critical level'
+                            id='form-input-criticallevel'
+                            type="number"
+                            size='medium'
+                            min="0"
+                            value={critLevel}
+                            onChange={e => setCritLevel(e.target.value)}
+                        />
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
@@ -810,7 +858,7 @@ const Consumables = () => {
                     </Button>
                 </Modal.Actions>
             </Modal>
-        </div>
+        </div >
     );
 }
 

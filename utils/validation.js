@@ -148,6 +148,9 @@ const consumableValidation = (data) => {
 		used: Joi.number().required().messages({
 			"string.empty": `Quantity must have value.`
 		}),
+		critLevel: Joi.number().required().messages({
+			"string.empty": `Quantity must have value.`
+		}),
 		description: Joi.string().allow(''),
 	});
 	return schema.validate(data, { abortEarly: false });
@@ -166,6 +169,9 @@ const consumableEditValidation = (data) => {
 			"string.empty": `Quantity must have value.`
 		}),
 		Used: Joi.number().required().messages({
+			"string.empty": `Quantity must have value.`
+		}),
+		CriticalLevel: Joi.number().required().messages({
 			"string.empty": `Quantity must have value.`
 		}),
 		Description: Joi.string().allow(''),

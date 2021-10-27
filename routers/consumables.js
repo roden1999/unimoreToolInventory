@@ -29,6 +29,7 @@ router.post("/", async (request, response) => {
 		Description: request.body.description,
 		Quantity: request.body.quantity,
 		Used: request.body.used,
+		CriticalLevel: request.body.critLevel,
 	});
 	try {
 		const consumable = await newItem.save();
@@ -83,7 +84,7 @@ router.post("/list", async (request, response) => {
 
 			var data = [];
 			for (const i in items) {
-				var critlvl = ((items[i].Quantity - items[i].Used) * 100) / items[i].Quantity;
+				// var critlvl = ((items[i].Quantity - items[i].Used) * 100) / items[i].Quantity;
 				var item = {
 					"_id": items[i]._id,
 					"Name": items[i].Name,
@@ -93,8 +94,8 @@ router.post("/list", async (request, response) => {
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
 					"Used": items[i].Used,
-					"CritLevelPercentage": critlvl,
-					"CritLevel": critlvl <= 40 ? true : false,
+					"CritLevel": items[i].CriticalLevel,
+					"CritLevelIndicator": ((items[i].Quantity - items[i].Used) <= items[i].CriticalLevel) ? true : false,
 				}
 				data.push(item);
 			}
@@ -113,8 +114,8 @@ router.post("/list", async (request, response) => {
 					"Description": items[i].Description,
 					"Quantity": items[i].Quantity,
 					"Used": items[i].Used,
-					"CritLevelPercentage": critlvl.toFixed(2),
-					"CritLevel": critlvl <= 40 ? true : false,
+					"CritLevel": items[i].CriticalLevel,
+					"CritLevelIndicator": ((items[i].Quantity - items[i].Used) <= items[i].CriticalLevel) ? true : false,
 				}
 				data.push(item);
 			}
