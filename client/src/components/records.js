@@ -815,21 +815,23 @@ const Records = () => {
                         </div>
                     }
                 </div>
-                <Pagination
-                    activePage={borrowedPage}
-                    boundaryRange={boundaryRange}
-                    onPageChange={(e, { activePage }) => setBorrowedPage(activePage)}
-                    size='mini'
-                    siblingRange={siblingRange}
-                    totalPages={totalBorrowed / 12}
-                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
-                    ellipsisItem={showEllipsis ? undefined : null}
-                    firstItem={showFirstAndLastNav ? undefined : null}
-                    lastItem={showFirstAndLastNav ? undefined : null}
-                    prevItem={showPreviousAndNextNav ? undefined : null}
-                    nextItem={showPreviousAndNextNav ? undefined : null}
-                    style={{ float: 'right', marginTop: 10 }}
-                />
+                {Object.keys(selectedRecord).length === 0 &&
+                    <Pagination
+                        activePage={borrowedPage}
+                        boundaryRange={boundaryRange}
+                        onPageChange={(e, { activePage }) => setBorrowedPage(activePage)}
+                        size='mini'
+                        siblingRange={siblingRange}
+                        totalPages={totalBorrowed / 12}
+                        // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                        ellipsisItem={showEllipsis ? undefined : null}
+                        firstItem={showFirstAndLastNav ? undefined : null}
+                        lastItem={showFirstAndLastNav ? undefined : null}
+                        prevItem={showPreviousAndNextNav ? undefined : null}
+                        nextItem={showPreviousAndNextNav ? undefined : null}
+                        style={{ float: 'right', marginTop: 10 }}
+                    />
+                }
             </div>
 
             <div style={{ paddingTop: 50, }}>
@@ -881,21 +883,23 @@ const Records = () => {
                         </div>
                     }
                 </div>
-                <Pagination
-                    activePage={returnedPage}
-                    boundaryRange={boundaryRange}
-                    onPageChange={(e, { activePage }) => setReturnedPage(activePage)}
-                    size='mini'
-                    siblingRange={siblingRange}
-                    totalPages={totalReturned / 12}
-                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
-                    ellipsisItem={showEllipsis ? undefined : null}
-                    firstItem={showFirstAndLastNav ? undefined : null}
-                    lastItem={showFirstAndLastNav ? undefined : null}
-                    prevItem={showPreviousAndNextNav ? undefined : null}
-                    nextItem={showPreviousAndNextNav ? undefined : null}
-                    style={{ float: 'right', marginTop: 10 }}
-                />
+                {Object.keys(selectedRecord).length === 0 &&
+                    <Pagination
+                        activePage={returnedPage}
+                        boundaryRange={boundaryRange}
+                        onPageChange={(e, { activePage }) => setReturnedPage(activePage)}
+                        size='mini'
+                        siblingRange={siblingRange}
+                        totalPages={totalReturned / 12}
+                        // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                        ellipsisItem={showEllipsis ? undefined : null}
+                        firstItem={showFirstAndLastNav ? undefined : null}
+                        lastItem={showFirstAndLastNav ? undefined : null}
+                        prevItem={showPreviousAndNextNav ? undefined : null}
+                        nextItem={showPreviousAndNextNav ? undefined : null}
+                        style={{ float: 'right', marginTop: 10 }}
+                    />
+                }
             </div>
 
             <Modal

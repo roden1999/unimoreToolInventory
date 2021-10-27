@@ -127,7 +127,7 @@ router.post("/list-borrowed", async (request, response) => {
 					"EmployeeName": employee[0].FirstName + " " + employee[0].MiddleName + " " + employee[0].LastName,
 					"DateBorrowed": records[i].DateBorrowed,
 					"Project": !project ? "" : project[0].ProjectName,
-					"ProcessedBy": project[i].ProcessedBy,
+					"ProcessedBy": records[i].ProcessedBy,
 					"Remarks": records[i].Remarks,
 					"Status": records[i].Status,
 				}
