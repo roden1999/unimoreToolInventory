@@ -641,7 +641,7 @@ const Tools = () => {
             </Popup>
 
             <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
-                <Table celled size='large'>
+                <Table celled size='large' color='blue'>
                     <Table.Header style={{ position: "sticky", top: 0 }}>
                         <Table.Row>
                             <Table.HeaderCell rowSpan='2'>Name</Table.HeaderCell>
