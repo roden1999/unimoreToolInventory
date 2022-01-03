@@ -110,7 +110,7 @@ router.post("/list", verify, async (request, response) => {
 
 			var data = [];
 			for (const i in tools) {
-				const records = await recordModel.find({ Status: "Borrowed",  ToolId: tools[i]._id }).sort('-DateReturned');
+				const records = await recordModel.find({ Status: "Borrowed", ToolId: tools[i]._id }).sort('-DateReturned');
 				var available = Object.keys(records).length === 0 ? "On Hand" : records[0].Status;
 				var tool = {
 					"_id": tools[i]._id,
@@ -156,7 +156,7 @@ router.post("/list", verify, async (request, response) => {
 			const tools = await toolsModel.find({ IsDeleted: false, '$where': filter }).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in tools) {
-				const records = await recordModel.find({ Status: "Borrowed",  ToolId: tools[i]._id }).sort('-DateReturned');
+				const records = await recordModel.find({ Status: "Borrowed", ToolId: tools[i]._id }).sort('-DateReturned');
 				var available = Object.keys(records).length === 0 ? "On Hand" : records[0].Status;
 				var tool = {
 					"_id": tools[i]._id,
@@ -175,6 +175,36 @@ router.post("/list", verify, async (request, response) => {
 
 			response.status(200).json(data);
 		}
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+//List of All Tools
+router.get("/list-of-all-tools", verify, async (request, response) => {
+	try {
+
+		const tools = await toolsModel.find({
+		}).sort('Name');
+
+		var data = [];
+		for (const i in tools) {
+			const records = await recordModel.find({ Status: "Borrowed", ToolId: tools[i]._id }).sort('-DateReturned');
+			var available = Object.keys(records).length === 0 ? "On Hand" : records[0].Status;
+			var tool = {
+				"_id": tools[i]._id,
+				"Name": tools[i].Name,
+				"SerialNo": tools[i].SerialNo,
+				"Brand": tools[i].Brand,
+				"Status": tools[i].Status,
+				"Location": tools[i].Location,
+				"Category": tools[i].Category,
+				"DatePurchased": tools[i].DatePurchased,
+				"Description": tools[i].Description,
+				"Available": available,
+			}
+			data.push(tool);
+		}
+		response.status(200).json(data);
 	} catch (error) {
 		response.status(500).json({ error: error.message });
 	}
