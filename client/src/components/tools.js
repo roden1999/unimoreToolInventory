@@ -542,10 +542,186 @@ const Tools = () => {
                 // handle success
                 if (Array.isArray(response.data)) {
                     setAllTools(response.data);
+                    const document = {
+                        content: [
+                            { image: 'unimore', width: 195, height: 70 },
+                            {
+                                columns: [
+                                    [
+                                        { text: "List of Tools", fontSize: 15, bold: true, lineHeight: 1 },
+                                    ],
+                                    [
+                                        { text: "Date: " + moment().format("MMM DD, yyyy"), fontSize: 15, bold: true, lineHeight: 1, },
+                                    ]
+                                ]
+                            },
+                        ],
+                        images: {
+                            unimore: 'https://i.ibb.co/mTwt2jt/unimore-logo-back-black.png'
+                        }
+                    }
+    
+                    document.content.push({
+                        // layout: 'lightHorizontalLines',
+                        table: {
+                            headerRows: 1,
+                            widths: [80, 50, 78, 60, 37, 70, 70],
+                            body: [
+                                //Data
+                                //Header
+                                [
+                                    { text: 'Name', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Serial No.', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Brand', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Status', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Location', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Description', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Availability', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                ],
+                            ]
+                        },
+                    });
+    
+                    response.data.forEach(y => {
+                        document.content.push({
+                            // layout: 'lightHorizontalLines',
+                            table: {
+                                headerRows: 1,
+                                widths: [80, 50, 78, 60, 37, 70, 70],
+                                body: [
+                                    //Data
+                                    [
+                                        { text: y.Name, fontSize: 7, alignment: "left", },
+                                        { text: y.SerialNo, fontSize: 7, alignment: "left", },
+                                        { text: y.Brand, fontSize: 7, alignment: "left", },
+                                        { text: y.Status, fontSize: 7, alignment: "center", color: y.Status === "Good" ? "green" : "black" },
+                                        { text: y.Location, fontSize: 7, alignment: "center", },
+                                        { text: y.Description, fontSize: 7, alignment: "center", },
+                                        { text: y.Available, fontSize: 7, alignment: "left", color: y.Available === "On Hand" ? "green" : "red" },
+                                    ],
+                                ],
+                                // lineHeight: 2
+                            },
+                        });
+                    });
+    
+                    pdfMake.tableLayouts = {
+                        exampleLayout: {
+                            hLineWidth: function (i, node) {
+                                if (i === 0 || i === node.table.body.length) {
+                                    return 0;
+                                }
+                                return (i === node.table.headerRows) ? 2 : 1;
+                            },
+                            vLineWidth: function (i) {
+                                return 0;
+                            },
+                            hLineColor: function (i) {
+                                return i === 1 ? 'black' : '#aaa';
+                            },
+                            paddingLeft: function (i) {
+                                return i === 0 ? 0 : 8;
+                            },
+                            paddingRight: function (i, node) {
+                                return (i === node.table.widths.length - 1) ? 0 : 8;
+                            }
+                        }
+                    };
+    
+                    // pdfMake.createPdf(document).download();
+                    pdfMake.createPdf(document).print({}, window.frames['printPdf']);
                 } else {
                     var obj = [];
                     obj.push(response.data);
                     setAllTools(obj);
+                    const document = {
+                        content: [
+                            { image: 'unimore', width: 195, height: 70 },
+                            {
+                                columns: [
+                                    [
+                                        { text: "List of Tools", fontSize: 15, bold: true, lineHeight: 1 },
+                                    ],
+                                    [
+                                        { text: "Date: " + moment().format("MMM DD, yyyy"), fontSize: 15, bold: true, lineHeight: 1, },
+                                    ]
+                                ]
+                            },
+                        ],
+                        images: {
+                            unimore: 'https://i.ibb.co/mTwt2jt/unimore-logo-back-black.png'
+                        }
+                    }
+    
+                    document.content.push({
+                        // layout: 'lightHorizontalLines',
+                        table: {
+                            headerRows: 1,
+                            widths: [80, 50, 78, 60, 37, 70, 70],
+                            body: [
+                                //Data
+                                //Header
+                                [
+                                    { text: 'Name', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Serial No.', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Brand', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Status', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Location', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Description', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Availability', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                ],
+                            ]
+                        },
+                    });
+    
+                    obj.forEach(y => {
+                        document.content.push({
+                            // layout: 'lightHorizontalLines',
+                            table: {
+                                headerRows: 1,
+                                widths: [80, 50, 78, 60, 37, 70, 70],
+                                body: [
+                                    //Data
+                                    [
+                                        { text: y.Name, fontSize: 7, alignment: "left", },
+                                        { text: y.SerialNo, fontSize: 7, alignment: "left", },
+                                        { text: y.Brand, fontSize: 7, alignment: "left", },
+                                        { text: y.Status, fontSize: 7, alignment: "center", color: y.Status === "Good" ? "green" : "black" },
+                                        { text: y.Location, fontSize: 7, alignment: "center", },
+                                        { text: y.Description, fontSize: 7, alignment: "center", },
+                                        { text: y.Available, fontSize: 7, alignment: "left", color: y.Available === "On Hand" ? "green" : "red" },
+                                    ],
+                                ],
+                                // lineHeight: 2
+                            },
+                        });
+                    });
+    
+                    pdfMake.tableLayouts = {
+                        exampleLayout: {
+                            hLineWidth: function (i, node) {
+                                if (i === 0 || i === node.table.body.length) {
+                                    return 0;
+                                }
+                                return (i === node.table.headerRows) ? 2 : 1;
+                            },
+                            vLineWidth: function (i) {
+                                return 0;
+                            },
+                            hLineColor: function (i) {
+                                return i === 1 ? 'black' : '#aaa';
+                            },
+                            paddingLeft: function (i) {
+                                return i === 0 ? 0 : 8;
+                            },
+                            paddingRight: function (i, node) {
+                                return (i === node.table.widths.length - 1) ? 0 : 8;
+                            }
+                        }
+                    };
+    
+                    // pdfMake.createPdf(document).download();
+                    pdfMake.createPdf(document).print({}, window.frames['printPdf']);
                 }
             })
             .catch(function (error) {
@@ -555,95 +731,6 @@ const Tools = () => {
             .finally(function () {
                 // always executed
             });
-
-        const document = {
-            content: [
-                { image: 'unimore', width: 195, height: 70 },
-                {
-                    columns: [
-                        [
-                            { text: "TOOLS", fontSize: 15, bold: true, lineHeight: 1 },
-                        ],
-                        [
-                            { text: "Date: " + moment().format("MMM DD"), fontSize: 15, bold: true, lineHeight: 1, },
-                        ]
-                    ]
-                },
-            ],
-            images: {
-                unimore: 'https://i.ibb.co/mTwt2jt/unimore-logo-back-black.png'
-            }
-        }
-
-        document.content.push({
-            // layout: 'lightHorizontalLines',
-            table: {
-                headerRows: 1,
-                widths: [80, 50, 78, 60, 37, 70, 70],
-                body: [
-                    //Data
-                    //Header
-                    [
-                        { text: 'Name', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                        { text: 'Serial No.', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                        { text: 'Brand', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                        { text: 'Status', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                        { text: 'Location', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                        { text: 'Description', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                        { text: 'Availability', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
-                    ],
-                ]
-            },
-        });
-
-        allTools.forEach(y => {
-            document.content.push({
-                // layout: 'lightHorizontalLines',
-                table: {
-                    headerRows: 1,
-                    widths: [80, 50, 78, 60, 37, 70, 70],
-                    body: [
-                        //Data
-                        [
-                            { text: y.Name, fontSize: 7, alignment: "left", },
-                            { text: y.SerialNo, fontSize: 7, alignment: "left", },
-                            { text: y.Brand, fontSize: 7, alignment: "left", },
-                            { text: y.Status, fontSize: 7, alignment: "center", color: y.Status === "Good" ? "green" : "black" },
-                            { text: y.Location, fontSize: 7, alignment: "center", },
-                            { text: y.Description, fontSize: 7, alignment: "center", },
-                            { text: y.Available, fontSize: 7, alignment: "left", color: y.Available === "On Hand" ? "green" : "red" },
-                        ],
-                    ],
-                    // lineHeight: 2
-                },
-            });
-        });
-
-        pdfMake.tableLayouts = {
-            exampleLayout: {
-                hLineWidth: function (i, node) {
-                    if (i === 0 || i === node.table.body.length) {
-                        return 0;
-                    }
-                    return (i === node.table.headerRows) ? 2 : 1;
-                },
-                vLineWidth: function (i) {
-                    return 0;
-                },
-                hLineColor: function (i) {
-                    return i === 1 ? 'black' : '#aaa';
-                },
-                paddingLeft: function (i) {
-                    return i === 0 ? 0 : 8;
-                },
-                paddingRight: function (i, node) {
-                    return (i === node.table.widths.length - 1) ? 0 : 8;
-                }
-            }
-        };
-
-        // pdfMake.createPdf(document).download();
-        pdfMake.createPdf(document).print({}, window.frames['printPdf']);
     }
 
     return (
