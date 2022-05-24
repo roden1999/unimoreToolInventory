@@ -127,6 +127,37 @@ router.post("/list", async (request, response) => {
 	}
 });
 
+//list of all consumables
+router.get("/list-of-all-consumables", verify, async (request, response) => {
+	try {
+
+		const items = await consumableModel.find({
+			IsDeleted: false
+		}).sort('Name');
+
+		var data = [];
+		for (const i in items) {
+			var critlvl = ((items[i].Quantity - items[i].Used) * 100) / items[i].Quantity;
+			var item = {
+				"_id": items[i]._id,
+				"Name": items[i].Name,
+				"Brand": items[i].Brand,
+				"Unit": items[i].Unit,
+				"DatePurchased": items[i].DatePurchased,
+				"Description": items[i].Description,
+				"Quantity": items[i].Quantity,
+				"Used": items[i].Used,
+				"CritLevel": items[i].CriticalLevel,
+				"CritLevelIndicator": ((items[i].Quantity - items[i].Used) <= items[i].CriticalLevel) ? true : false,
+			}
+			data.push(item);
+		}
+		response.status(200).json(data);
+	} catch (error) {
+		response.status(500).json({ error: error.message });
+	}
+});
+
 //For search options
 router.get("/search-options", verify, async (request, response) => {
 	try {

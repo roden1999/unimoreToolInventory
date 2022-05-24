@@ -4,6 +4,13 @@ import 'semantic-ui-css/semantic.min.css';
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+
+//import pdfmake
+import pdfMake from 'pdfmake/build/pdfmake.js';
+import pdfFonts from 'pdfmake/build/vfs_fonts.js';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 const axios = require("axios");
 const moment = require("moment");
 
@@ -108,6 +115,8 @@ const Consumables = () => {
     const [deletePopup, setDeletePopup] = useState(false);
     const [totalItem, setTotalItem] = useState(0);
     const [itemPage, setItemPage] = useState(1);
+    const [allConsumables, setAllConsumables] = useState([]);
+
 
     const boundaryRange = 1;
     const siblingRange = 1;
@@ -450,6 +459,217 @@ const Consumables = () => {
         return list;
     }
 
+    const exportToPDF = () => {
+        var url = window.apihost + "consumables/list-of-all-consumables";
+        var token = sessionStorage.getItem("auth-token");
+        var data = [];
+        axios
+            .get(url, {
+                headers: { "auth-token": token },
+            })
+            .then(function (response) {
+                // handle success
+                if (Array.isArray(response.data)) {
+                    setAllConsumables(response.data);
+                    const document = {
+                        content: [
+                            { image: 'unimore', width: 195, height: 70 },
+                            {
+                                columns: [
+                                    [
+                                        { text: "List of Consumables", fontSize: 15, bold: true, lineHeight: 1 },
+                                    ],
+                                    [
+                                        { text: "Date: " + moment().format("MMM DD, yyyy"), fontSize: 15, bold: true, lineHeight: 1, },
+                                    ]
+                                ]
+                            },
+                        ],
+                        images: {
+                            unimore: 'https://i.ibb.co/mTwt2jt/unimore-logo-back-black.png'
+                        }
+                    }
+    
+                    document.content.push({
+                        // layout: 'lightHorizontalLines',
+                        table: {
+                            headerRows: 1,
+                            widths: [80, 35, 40, 40, 30, 40, 70, 40, 50],
+                            body: [
+                                //Data
+                                //Header
+                                [
+                                    { text: 'Name', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Brand', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Unit', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Total Item Received', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Used', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Total Available', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Date Purchased', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Status', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Description', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                ],
+                            ]
+                        },
+                    });
+    
+                    response.data.forEach(y => {
+                        document.content.push({
+                            // layout: 'lightHorizontalLines',
+                            table: {
+                                headerRows: 1,
+                                widths: [80, 35, 40, 40, 30, 40, 70, 40, 50],
+                                body: [
+                                    //Data
+                                    [
+                                        { text: y.Name, fontSize: 7, alignment: "left", },
+                                        { text: y.Brand, fontSize: 7, alignment: "left", },
+                                        { text: y.Unit, fontSize: 7, alignment: "left", },
+                                        { text: y.Quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), fontSize: 7, alignment: "left", },
+                                        { text: y.Used.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), fontSize: 7, alignment: "center" },
+                                        { text: (y.Quantity - y.Used).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), fontSize: 7, alignment: "center", },
+                                        { text: y.datePurchased ? moment(y.datePurchased).format("MM/DD/yyyy") : "No Date", fontSize: 7, alignment: "center", },
+                                        { text: y.CritLevelIndicator === false ? "Good" : "Low of Stocks", fontSize: 7, alignment: "center", color: y.CritLevelIndicator === false ? "green" : "orange" },
+                                        { text: y.Description, fontSize: 7, alignment: "left" },
+                                    ],
+                                ],
+                                // lineHeight: 2
+                            },
+                        });
+                    });
+    
+                    pdfMake.tableLayouts = {
+                        exampleLayout: {
+                            hLineWidth: function (i, node) {
+                                if (i === 0 || i === node.table.body.length) {
+                                    return 0;
+                                }
+                                return (i === node.table.headerRows) ? 2 : 1;
+                            },
+                            vLineWidth: function (i) {
+                                return 0;
+                            },
+                            hLineColor: function (i) {
+                                return i === 1 ? 'black' : '#aaa';
+                            },
+                            paddingLeft: function (i) {
+                                return i === 0 ? 0 : 8;
+                            },
+                            paddingRight: function (i, node) {
+                                return (i === node.table.widths.length - 1) ? 0 : 8;
+                            }
+                        }
+                    };
+    
+                    // pdfMake.createPdf(document).download();
+                    pdfMake.createPdf(document).print({}, window.frames['printPdf']);
+                } else {
+                    var obj = [];
+                    obj.push(response.data);
+                    setAllConsumables(obj);
+                    const document = {
+                        content: [
+                            { image: 'unimore', width: 195, height: 70 },
+                            {
+                                columns: [
+                                    [
+                                        { text: "List of Consumables", fontSize: 15, bold: true, lineHeight: 1 },
+                                    ],
+                                    [
+                                        { text: "Date: " + moment().format("MMM DD, yyyy"), fontSize: 15, bold: true, lineHeight: 1, },
+                                    ]
+                                ]
+                            },
+                        ],
+                        images: {
+                            unimore: 'https://i.ibb.co/mTwt2jt/unimore-logo-back-black.png'
+                        }
+                    }
+    
+                    document.content.push({
+                        // layout: 'lightHorizontalLines',
+                        table: {
+                            headerRows: 1,
+                            widths: [80, 35, 40, 40, 30, 40, 70, 40, 50],
+                            body: [
+                                //Data
+                                //Header
+                                [
+                                    { text: 'Name', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Brand', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Unit', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Total Item Received', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Used', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Total Available', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Date Purchased', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Status', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                    { text: 'Description', bold: true, fontSize: 9, alignment: "center", fillColor: '#C8C9CA' },
+                                ],
+                            ]
+                        },
+                    });
+    
+                    obj.forEach(y => {
+                        document.content.push({
+                            // layout: 'lightHorizontalLines',
+                            table: {
+                                headerRows: 1,
+                                widths: [80, 35, 40, 40, 30, 40, 70, 40, 50],
+                                body: [
+                                    //Data
+                                    [
+                                        { text: y.Name, fontSize: 7, alignment: "left", },
+                                        { text: y.Brand, fontSize: 7, alignment: "left", },
+                                        { text: y.Unit, fontSize: 7, alignment: "left", },
+                                        { text: y.Quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), fontSize: 7, alignment: "left", },
+                                        { text: y.Used.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), fontSize: 7, alignment: "center" },
+                                        { text: (y.Quantity - y.Used).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), fontSize: 7, alignment: "center", },
+                                        { text: y.datePurchased ? moment(y.datePurchased).format("MM/DD/yyyy") : "No Date", fontSize: 7, alignment: "center", },
+                                        { text: y.CritLevelIndicator === false ? "Good" : "Low of Stocks", fontSize: 7, alignment: "center", color: y.CritLevelIndicator === false ? "green" : "orange" },
+                                        { text: y.Description, fontSize: 7, alignment: "left" },
+                                    ],
+                                ],
+                                // lineHeight: 2
+                            },
+                        });
+                    });
+    
+                    pdfMake.tableLayouts = {
+                        exampleLayout: {
+                            hLineWidth: function (i, node) {
+                                if (i === 0 || i === node.table.body.length) {
+                                    return 0;
+                                }
+                                return (i === node.table.headerRows) ? 2 : 1;
+                            },
+                            vLineWidth: function (i) {
+                                return 0;
+                            },
+                            hLineColor: function (i) {
+                                return i === 1 ? 'black' : '#aaa';
+                            },
+                            paddingLeft: function (i) {
+                                return i === 0 ? 0 : 8;
+                            },
+                            paddingRight: function (i, node) {
+                                return (i === node.table.widths.length - 1) ? 0 : 8;
+                            }
+                        }
+                    };
+    
+                    // pdfMake.createPdf(document).download();
+                    pdfMake.createPdf(document).print({}, window.frames['printPdf']);
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .finally(function () {
+                // always executed
+            });
+    }
+
     return (
         <div>
             <ToastContainer />
@@ -478,6 +698,8 @@ const Consumables = () => {
                     styles={customMultiSelectStyle}
                 />
             </div>
+
+            <Button size='large' style={{ float: 'right' }} onClick={() => exportToPDF()}><Icon name='file pdf' />Export to PDF</Button>
 
             <div style={{ width: "100%", overflowY: 'scroll', height: '100%', maxHeight: '78vh', }}>
                 <Table celled structured size='large' color='blue'>
