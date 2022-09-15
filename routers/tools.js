@@ -4,6 +4,7 @@ const verify = require("../utils/verifyToken");
 const toolsModel = require("../models/tool");
 const recordModel = require("../models/record");
 const { toolsValidation, toolsEditValidation } = require("../utils/validation");
+var mongoose = require('mongoose');
 
 //Insert new user to the database
 router.post("/", verify, async (request, response) => {
@@ -74,39 +75,70 @@ router.post("/list", verify, async (request, response) => {
 			var data = request.body.selectedTools;
 			for (const i in data) {
 				// console.log(`_id: ${request.body[i].value}`);
-				id.push({ _id: request.body.selectedTools[i].value });
+				//id.push({ _id: request.body.selectedTools[i].value });
+				var objectId = mongoose.Types.ObjectId(request.body.selectedTools[i].value.toString());
+				id.push(objectId);
 			}
 
-			var filter = "";
+
+			var filter = {"IsDeleted": false};
 			if (Object.keys(request.body.brandFilter).length > 0) {
-				filter = `this.Brand == "${request.body.brandFilter.value}"`;
+				// filter = `this.Brand == "${request.body.brandFilter.value}"`;
+				// filter = filter + `, "Brand":"${request.body.brandFilter.value}"`;
+				filter["Brand"] = request.body.brandFilter.value;
 			}
 
 			if (Object.keys(request.body.brandFilter).length === 0) {
-				filter = `this.Brand !== ""`;
+				// filter = `this.Brand !== ""`;
+				filter = filter;
 			}
 
 			if (Object.keys(request.body.categoryFilter).length > 0) {
-				filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+				// filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+				// filter = filter + `, "Category": "${request.body.categoryFilter.value}"`
+				filter["Category"] = request.body.categoryFilter.value;
 			}
 
 			if (Object.keys(request.body.categoryFilter).length === 0) {
-				filter = filter + " " + `&& this.Category !== ""`;
+				// filter = filter + " " + `&& this.Category !== ""`;
+				filter = filter;
 			}
 
 			if (Object.keys(request.body.statusFilter).length > 0) {
-				filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+				// filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+				// filter = filter + `, "Status": "${request.body.statusFilter.value}"`;
+				filter["Status"] = request.body.statusFilter.value;
 			}
 
 			if (Object.keys(request.body.statusFilter).length === 0) {
-				filter = filter + " " + `&& this.Status !== ""`;
+				// filter = filter + " " + `&& this.Status !== ""`;
+				filter = filter;
 			}
 
-			const tools = await toolsModel.find({
-				'$or': id,
-				'$where': filter,
-				IsDeleted: false
-			}).sort('Name');
+			// var stringToJson =  JSON.parse("{ " + filter + " }");
+
+			if (Object.keys(id).length > 0) {
+				// filter = filter + " " + `&& this.Status !== ""`;
+				//filter = filter + `, "_id": {"$in": [${id}]}`;
+				// filter = filter + ', "_id": { "$in": [] }';
+				// stringToJson = JSON.parse("{ " + filter + " }");
+				// stringToJson._id["$in"].push(id)
+				filter["_id"] = { "$in": id };
+			}
+
+			console.log(filter)
+
+			// const tools = await toolsModel.find({
+			// 	'$or': id,
+			// 	'$where': filter,
+			// 	IsDeleted: false
+			// }).sort('Name');
+			const tools = await toolsModel.aggregate([
+				{
+					// "$match": stringToJson
+					"$match": filter
+				}
+			]).sort('Name');
 
 			var data = [];
 			for (const i in tools) {
@@ -128,32 +160,43 @@ router.post("/list", verify, async (request, response) => {
 			}
 			response.status(200).json(data);
 		} else {
-			var filter = "";
+			var filter = `"IsDeleted": ${false}`;
 			if (Object.keys(request.body.brandFilter).length > 0) {
-				filter = `this.Brand == "${request.body.brandFilter.value}"`;
+				// filter = `this.Brand == "${request.body.brandFilter.value}"`;
+				filter = filter + `, "Brand":"${request.body.brandFilter.value}"`;
 			}
 
 			if (Object.keys(request.body.brandFilter).length === 0) {
-				filter = `this.Brand !== ""`;
+				// filter = `this.Brand !== ""`;
+				filter = filter;
 			}
 
 			if (Object.keys(request.body.categoryFilter).length > 0) {
-				filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+				// filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+				filter = filter + `, "Category": "${request.body.categoryFilter.value}"`
 			}
 
 			if (Object.keys(request.body.categoryFilter).length === 0) {
-				filter = filter + " " + `&& this.Category !== ""`;
+				// filter = filter + " " + `&& this.Category !== ""`;
+				filter = filter;
 			}
 
 			if (Object.keys(request.body.statusFilter).length > 0) {
-				filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+				// filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+				filter = filter + `, "Status": "${request.body.statusFilter.value}"`
 			}
 
 			if (Object.keys(request.body.statusFilter).length === 0) {
-				filter = filter + " " + `&& this.Status !== ""`;
+				// filter = filter + " " + `&& this.Status !== ""`;
+				filter = filter;
 			}
 
-			const tools = await toolsModel.find({ IsDeleted: false, '$where': filter }).skip((page - 1) * perPage).limit(perPage).sort('Name');
+			var stringToJson = JSON.parse("{ " + filter + " }");
+
+			// const tools = await toolsModel.find({ IsDeleted: false, '$where': filter }).skip((page - 1) * perPage).limit(perPage).sort('Name');
+			const tools = await toolsModel.aggregate([{
+				"$match": stringToJson
+			}]).skip((page - 1) * perPage).limit(perPage).sort('Name');
 			var data = [];
 			for (const i in tools) {
 				const records = await recordModel.find({ Status: "Borrowed", ToolId: tools[i]._id }).sort('-DateReturned');
@@ -252,32 +295,43 @@ router.get("/search-options", verify, async (request, response) => {
 
 router.post("/search-options", verify, async (request, response) => {
 	try {
-		var filter = "";
+		var filter = `"IsDeleted": ${false}`;
 		if (Object.keys(request.body.brandFilter).length > 0) {
-			filter = `this.Brand == "${request.body.brandFilter.value}"`;
+			// filter = `this.Brand == "${request.body.brandFilter.value}"`;
+			filter = filter + `, "Brand":"${request.body.brandFilter.value}"`;
 		}
 
 		if (Object.keys(request.body.brandFilter).length === 0) {
-			filter = `this.Brand !== ""`;
+			// filter = `this.Brand !== ""`;
+			filter = filter;
 		}
 
 		if (Object.keys(request.body.categoryFilter).length > 0) {
-			filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+			// filter = filter + " " + `&& this.Category == "${request.body.categoryFilter.value}"`;
+			filter = filter + `, "Category": "${request.body.categoryFilter.value}"`
 		}
 
 		if (Object.keys(request.body.categoryFilter).length === 0) {
-			filter = filter + " " + `&& this.Category !== ""`;
+			// filter = filter + " " + `&& this.Category !== ""`;
+			filter = filter;
 		}
 
 		if (Object.keys(request.body.statusFilter).length > 0) {
-			filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+			// filter = filter + " " + `&& this.Status == "${request.body.statusFilter.value}"`;
+			filter = filter + `, "Status": "${request.body.statusFilter.value}"`
 		}
 
 		if (Object.keys(request.body.statusFilter).length === 0) {
-			filter = filter + " " + `&& this.Status !== ""`;
+			// filter = filter + " " + `&& this.Status !== ""`;
+			filter = filter;
 		}
 
-		const tools = await toolsModel.find({ IsDeleted: false, $where: filter }).sort('Name');
+		var stringToJson = JSON.parse("{ " + filter + " }");
+
+		// const tools = await toolsModel.find({ IsDeleted: false, $where: filter }).sort('Name');
+		const tools = await toolsModel.aggregate([{
+			"$match": stringToJson
+		}]).sort('Name');
 
 		response.status(200).json(tools);
 	} catch (error) {
