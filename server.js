@@ -19,7 +19,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 //Images / Files middleware
 app.use(express.static(path.join(__dirname, "/app_data")));
 
-//app.use(express.static("client/build"));
+app.use(express.static("client/build"));
 
 // Route to login
 const loginRouter = require("./routers/login");

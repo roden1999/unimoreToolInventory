@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>iisnode logs</title>
+    <style type="text/css">
+        body
+        {
+            font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+        }
+        table
+        {
+            border-collapse: collapse;
+        }
+        td, th
+        {
+            border: 1px solid lightgray;
+            padding: 3px 7px 2px 7px;
+        }
+        th
+        {
+            text-align: left;
+            padding-top: 5px;
+            padding-bottom: 4px;
+            background-color: Gray;
+            color: #ffffff;
+        }
+        td.stderr
+        {
+            color: Red;
+        }
+    </style>
+</head>
+<body>
+    <table id="logFilesTable">
+        <tr>
+            <th>
+                Computer name
+            </th>
+            <th>
+                PID
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Link
+            </th>
+        </tr>
+    </table>
+    <p id="lastUpdated"></p>
+    <script type="text/javascript">
+
+        // this is replaced with actual data at runtime by code in interceptor.js
+        var logFiles = [{"file":"MAIL-11180-stderr-1677466389306.txt","computername":"MAIL","pid":11180,"type":"stderr","created":1677466389306},{"file":"MAIL-11180-stdout-1677466389296.txt","computername":"MAIL","pid":11180,"type":"stdout","created":1677466389296},{"file":"MAIL-11260-stderr-1677201602787.txt","computername":"MAIL","pid":11260,"type":"stderr","created":1677201602787},{"file":"MAIL-11260-stdout-1677201602786.txt","computername":"MAIL","pid":11260,"type":"stdout","created":1677201602786},{"file":"MAIL-11868-stderr-1677225641406.txt","computername":"MAIL","pid":11868,"type":"stderr","created":1677225641406},{"file":"MAIL-11868-stdout-1677225641404.txt","computername":"MAIL","pid":11868,"type":"stdout","created":1677225641404},{"file":"MAIL-13684-stderr-1677201671919.txt","computername":"MAIL","pid":13684,"type":"stderr","created":1677201671919},{"file":"MAIL-13684-stdout-1677201671915.txt","computername":"MAIL","pid":13684,"type":"stdout","created":1677201671915},{"file":"MAIL-14748-stderr-1677205004849.txt","computername":"MAIL","pid":14748,"type":"stderr","created":1677205004849},{"file":"MAIL-14748-stdout-1677205004845.txt","computername":"MAIL","pid":14748,"type":"stdout","created":1677205004845},{"file":"MAIL-7328-stderr-1677207231929.txt","computername":"MAIL","pid":7328,"type":"stderr","created":1677207231929},{"file":"MAIL-7328-stdout-1677207231887.txt","computername":"MAIL","pid":7328,"type":"stdout","created":1677207231887},{"file":"MAIL-9108-stderr-1677209869255.txt","computername":"MAIL","pid":9108,"type":"stderr","created":1677209869255},{"file":"MAIL-9108-stdout-1677209869235.txt","computername":"MAIL","pid":9108,"type":"stdout","created":1677209869235},{"file":"MAIL-9732-stderr-1677457854301.txt","computername":"MAIL","pid":9732,"type":"stderr","created":1677457854301},{"file":"MAIL-9732-stdout-1677457854249.txt","computername":"MAIL","pid":9732,"type":"stdout","created":1677457854249}];
+        var lastUpdated = 1677466390523;
+        var date = new Date();
+
+        date.setTime(lastUpdated);
+        document.getElementById('lastUpdated').innerHTML = 'Index was last updated ' + date;
+
+        logFiles.sort(function (a, b) {
+            return b.created - a.created;
+        });
+
+        var logFilesTable = document.getElementById("logFilesTable");
+        for (var i = 0; i < logFiles.length; i++) {
+            var logFile = logFiles[i];
+            date.setTime(logFile.created);
+            var row = logFilesTable.insertRow(-1);
+            var computerNameCell = row.insertCell(0);
+            var pidCell = row.insertCell(1);
+            var typeCell = row.insertCell(2);
+            var dateCell = row.insertCell(3);
+            var logCell = row.insertCell(4);
+            computerNameCell.innerHTML = logFile.computername;
+            pidCell.innerHTML = logFile.pid.toString();
+            typeCell.innerHTML = logFile.type;
+            typeCell.setAttribute('class', logFile.type);
+            dateCell.innerHTML = date.toString();
+            logCell.innerHTML = '<a href="' + logFile.file + '">log</a>';
+        };
+
+    </script>
+</body>
+</html>
